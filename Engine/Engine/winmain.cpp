@@ -13,7 +13,7 @@
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline, int iCmdShow)
 {
 	EngineClass* Engine;
-	bool result;
+	bool bResult;
 
 	// Create the Engine object.
 	Engine = new EngineClass;
@@ -21,8 +21,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 		return 1;
 
 	// Initialize and run the engine.
-	result = Engine->Initialize();
-	if(result)
+	bResult = Engine->Initialize();
+	if(bResult)
 		Engine->Run();
 
 	// Shutdown the engine.
