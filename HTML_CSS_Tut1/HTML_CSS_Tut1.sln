@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2012 for Windows Desktop
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HTML_CSS_Tut1", "HTML_CSS_Tut1\HTML_CSS_Tut1.vcxproj", "{4A965CF9-5900-499D-860C-92CC9DAE2BCE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4A965CF9-5900-499D-860C-92CC9DAE2BCE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4A965CF9-5900-499D-860C-92CC9DAE2BCE}.Debug|Win32.Build.0 = Debug|Win32
+		{4A965CF9-5900-499D-860C-92CC9DAE2BCE}.Release|Win32.ActiveCfg = Release|Win32
+		{4A965CF9-5900-499D-860C-92CC9DAE2BCE}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
