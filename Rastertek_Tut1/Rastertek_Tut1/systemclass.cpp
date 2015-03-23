@@ -66,10 +66,56 @@ bool SystemClass::Initialize()
 
 void SystemClass::Run()
 {
-	// STUFF!!!
+	MSG msg;
+	bool done;
+	bool result;
+
+	// Initialize the message structure.
+	SecureZeroMemory(&msg, sizeof(MSG));
+
+	// Loop until there is a quit message.
+	done = false;
+	while(!done)
+	{
+		// Handle the windows messages.
+		if(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+
+		// If Windows signals to quit, end the application.
+		if(msg.message == WM_QUIT)
+			done = true;
+		else
+		{
+			// Otherwise perform frame processing.
+			result = Frame();
+			if(!result)
+				done = true;
+		}
+	}
 }
 
 void SystemClass::Shutdown()
 {
-	// STUFF!!!
+	// Release the graphics object.
+	if(m_Graphics)
+	{
+		m_Graphics->Shutdown();
+		delete m_Graphics;
+		m_Graphics = 0;
+	}
+
+	// Release the input object.
+	if(m_Input)
+	{
+		delete m_Input;
+		m_Input = 0;
+	}
+
+	// Shutdown the window.
+	ShutdownWindows();
+
+	return;
 }
