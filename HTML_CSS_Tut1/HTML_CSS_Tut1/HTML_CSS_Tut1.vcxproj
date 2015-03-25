@@ -11,7 +11,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <None Include="RecipeWorld.html" />
+    <None Include="Legal.html" />
+    <None Include="Home.html">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Magic_Cake.html" />
+    <None Include="MyStyle.css" />
+    <None Include="Recipes.html" />
+    <None Include="Suggest.html" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4A965CF9-5900-499D-860C-92CC9DAE2BCE}</ProjectGuid>

@@ -15,7 +15,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="RecipeWorld.html">
+    <None Include="Legal.html">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Home.html">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Magic_Cake.html">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Recipes.html">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Suggest.html">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="MyStyle.css">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
