@@ -119,3 +119,44 @@ void SystemClass::Shutdown()
 
 	return;
 }
+
+bool SystemClass::Frame()
+{
+	bool result;
+
+	// Check if the user has pressed the escape key.
+	if(m_Input->IsKeyDown(VK_ESCAPE))
+		return false;
+
+	// Do the frame processing for graphics objects.
+	result = m_Graphics->Frame();
+	if(!result)
+		return false;
+
+	return true;
+}
+
+LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
+{
+	switch(message)
+	{
+		// Check if a key has been pressed down.
+		case WM_KEYDOWN:
+			{
+				// If a key has been pressed send it to the input object.
+				m_Input->KeyDown((UINT)wparam);
+				return 0;
+			}
+
+		// Check if a key has been released.
+		case WM_KEYUP:
+			{
+				m_Input->KeyUp((UINT)wparam);
+				return 0;
+			}
+
+		// Send all other input to the Windows message handler.
+		default:
+			return DefWindowProc(hwnd, message, wparam, lparam);
+	}
+}

@@ -6,6 +6,12 @@
 // Pre-processing Directives
 //-----------------------------
 #pragma once
+#define WIN32_LEAN_AND_MEAN
+
+///////////////////////////////
+// Includes
+//-----------------------------
+#include <Windows.h>
 
 ///////////////////////////////
 // Class Declaration
