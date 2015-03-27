@@ -23,13 +23,12 @@ public:
 	InputClass(const InputClass& src);
 	~InputClass();
 
-	bool Initialize();
+	void Initialize();
 
 	void KeyDown(UINT key);
 	void KeyUp(UINT key);
 
 	bool IsKeyDown(UINT key);
-	bool IsKeyUp(UINT key);
 
 private:
 	bool m_Keys[256];

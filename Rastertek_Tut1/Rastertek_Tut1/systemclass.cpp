@@ -38,8 +38,8 @@ bool SystemClass::Initialize()
 	}
 
 	// Initialize the input object.
-	result = m_Input->Initialize();
-	if(!result)
+	m_Input->Initialize();
+	if(!m_Input)
 	{
 		MessageBox(m_hWnd, "Failed to initialize input object.", "Error!", MB_OK);
 		return false;
