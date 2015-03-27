@@ -39,7 +39,7 @@ private:
 private:
 	LPCSTR m_AppName;
 	HINSTANCE m_hInstance;
-	HWND m_hwnd;
+	HWND m_hWnd;
 
 	InputClass* m_Input;
 	GraphicsClass* m_Graphics;

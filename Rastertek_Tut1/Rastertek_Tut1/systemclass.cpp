@@ -33,7 +33,7 @@ bool SystemClass::Initialize()
 	m_Input = new InputClass;
 	if(!m_Input)
 	{
-		MessageBox(m_hwnd, "Failed to create input object.", "Error!", MB_OK);
+		MessageBox(m_hWnd, "Failed to create input object.", "Error!", MB_OK);
 		return false;
 	}
 
@@ -41,7 +41,7 @@ bool SystemClass::Initialize()
 	result = m_Input->Initialize();
 	if(!result)
 	{
-		MessageBox(m_hwnd, "Failed to initialize input object.", "Error!", MB_OK);
+		MessageBox(m_hWnd, "Failed to initialize input object.", "Error!", MB_OK);
 		return false;
 	}
 
@@ -49,15 +49,15 @@ bool SystemClass::Initialize()
 	m_Graphics = new GraphicsClass;
 	if(!m_Graphics)
 	{
-		MessageBox(m_hwnd, "Failed to create graphics object.", "Error!", MB_OK);
+		MessageBox(m_hWnd, "Failed to create graphics object.", "Error!", MB_OK);
 		return false;
 	}
 
 	// Initialize the graphics object.
-	result = m_Graphics->Initialize(screenWidth, screenHeight, m_hwnd);
+	result = m_Graphics->Initialize(screenWidth, screenHeight, m_hWnd);
 	if(!result)
 	{
-		MessageBox(m_hwnd, "Failed to initialize graphics object.", "Error!", MB_OK);
+		MessageBox(m_hWnd, "Failed to initialize graphics object.", "Error!", MB_OK);
 		return false;
 	}
 
@@ -206,6 +206,76 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 		dmScreenSettings.dmPelsWidth = (ULONG)screenWidth;
 		dmScreenSettings.dmPelsHeight = (ULONG)screenHeight;
 		dmScreenSettings.dmBitsPerPel = 32;
-		dmScreenSettings.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_BITSPERPEL; // CHECK THIS !!!!!!!!!!!!!!!!!!!
+		dmScreenSettings.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_BITSPERPEL;                       // CHECK THIS !!!!!!!!!!!!!!!!!!!
+
+		// Change the display settings to fullscreen.
+		ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN);
+
+		// Set the postion of the window to the top left corner.
+		posX = 0;
+		posY = 0;
+	}
+	else
+	{
+		// If windowed, set to 800x600 resolution.
+		screenWidth = 800;
+		screenHeight = 600;
+
+		// Place the window in the middle of the screen.
+		posX = (GetSystemMetrics(SM_CXSCREEN) - screenWidth) / 2;
+		posY = (GetSystemMetrics(SM_CYSCREEN) - screenHeight) / 2;
+	}
+
+	// Create the window.
+	m_hWnd = CreateWindowEx(WS_EX_APPWINDOW, m_AppName, m_AppName, WS_OVERLAPPED,
+							posX, posY, screenWidth, screenHeight, 
+							NULL, NULL, m_hInstance, NULL);
+
+	// Show the window and set it as the main focus.
+	ShowWindow(m_hWnd, SW_SHOW);
+	SetForegroundWindow(m_hWnd);
+	SetFocus(m_hWnd);
+
+	return;
+}
+
+void SystemClass::ShutdownWindows()
+{
+	// Fix the display settings if the app was fullscreen.
+	if(FULL_SCREEN)
+		ChangeDisplaySettings(NULL, 0);
+
+	// Remove the window.
+	DestroyWindow(m_hWnd);
+	m_hWnd = NULL;
+
+	// Remove the application instance.
+	UnregisterClass(m_AppName, m_hInstance);
+	m_hInstance = 0;
+
+	// Release the application handle.
+	g_AppHandle = NULL;
+
+	return;
+}
+
+LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
+{
+	switch(message)
+	{
+		case WM_DESTROY:
+		{
+			PostQuitMessage(0);
+			return 0;
+		}
+
+		case WM_CLOSE:
+		{
+			PostQuitMessage(0);
+			return 0;
+		}
+
+		default:
+			return g_AppHandle->MessageHandler(hwnd, message, wparam, lparam);
 	}
 }
