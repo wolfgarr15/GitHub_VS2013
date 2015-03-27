@@ -164,6 +164,7 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 {
 	WNDCLASSEX WndClass;
 	DEVMODE dmScreenSettings;
+	DWORD dwStyle;
 	int posX;
 	int posY;
 
@@ -210,6 +211,9 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 
 		// Change the display settings to fullscreen.
 		ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN);
+		
+		// Set the window display style.
+		dwStyle = WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP;
 
 		// Set the postion of the window to the top left corner.
 		posX = 0;
@@ -221,13 +225,16 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 		screenWidth = 800;
 		screenHeight = 600;
 
+		// Set the window display style.
+		dwStyle = WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_OVERLAPPED | WS_SYSMENU | WS_MINIMIZEBOX;
+
 		// Place the window in the middle of the screen.
 		posX = (GetSystemMetrics(SM_CXSCREEN) - screenWidth) / 2;
 		posY = (GetSystemMetrics(SM_CYSCREEN) - screenHeight) / 2;
 	}
 
 	// Create the window.
-	m_hWnd = CreateWindowEx(WS_EX_APPWINDOW, m_AppName, m_AppName, WS_OVERLAPPED | WS_SYSMENU | WS_MINIMIZEBOX,
+	m_hWnd = CreateWindowEx(WS_EX_APPWINDOW, m_AppName, m_AppName, dwStyle,
 							posX, posY, screenWidth, screenHeight, 
 							NULL, NULL, m_hInstance, NULL);
 
