@@ -10,11 +10,28 @@
 ///////////////////////////////
 // Class Definition
 //-----------------------------
-GraphicsClass::GraphicsClass(void)
+GraphicsClass::GraphicsClass() {}
+
+GraphicsClass::GraphicsClass(const GraphicsClass& src) {}
+
+GraphicsClass::~GraphicsClass() {}
+
+bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 {
+	return true;
 }
 
-
-GraphicsClass::~GraphicsClass(void)
+void GraphicsClass::Shutdown()
 {
+	return;
+}
+
+bool GraphicsClass::Frame()
+{
+	return true;
+}
+
+bool GraphicsClass::Render()
+{
+	return true;
 }

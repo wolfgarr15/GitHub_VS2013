@@ -227,7 +227,7 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	}
 
 	// Create the window.
-	m_hWnd = CreateWindowEx(WS_EX_APPWINDOW, m_AppName, m_AppName, WS_OVERLAPPED,
+	m_hWnd = CreateWindowEx(WS_EX_APPWINDOW, m_AppName, m_AppName, WS_OVERLAPPED | WS_SYSMENU | WS_MINIMIZEBOX,
 							posX, posY, screenWidth, screenHeight, 
 							NULL, NULL, m_hInstance, NULL);
 
