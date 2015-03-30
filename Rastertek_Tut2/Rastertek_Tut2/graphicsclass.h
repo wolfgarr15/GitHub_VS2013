@@ -38,5 +38,8 @@ public:
 
 private:
 	bool Render();
+
+private:
+	D3DClass* m_D3D;
 };
 
