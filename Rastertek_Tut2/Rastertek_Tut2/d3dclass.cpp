@@ -49,6 +49,9 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 
 	// Store the vsync setting.
 	m_vsync_enabled = vsync;
-
-
+	
+	// Create a DirectX graphics interface factory.
+	result = CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&factory);  // <--- What is this even doing!?
+	if(FAILED(result))
+		return false;
 }
