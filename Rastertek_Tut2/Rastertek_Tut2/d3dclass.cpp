@@ -47,6 +47,7 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 	D3D11_RASTERIZER_DESC rasterDesc;
+	D3D11_VIEWPORT viewport;
 	float fieldOfView;
 	float screenAspect;
 
@@ -279,4 +280,38 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	rasterDesc.MultisampleEnable = false;
 	rasterDesc.ScissorEnable = false;
 	rasterDesc.SlopeScaledDepthBias = 0.0f;
+
+	// Create the rasterizer state from the description.
+	result = m_device->CreateRasterizerState(&rasterDesc, &m_rasterState);
+	if(FAILED(result))
+		return false;
+
+	// Set the rasterizer state.
+	m_deviceContext->RSSetState(m_rasterState);
+
+	// Setup the viewport.
+	viewport.Width = (float)screenWidth;
+	viewport.Height = (float)screenHeight;
+	viewport.MinDepth = 0.0f;
+	viewport.MaxDepth = 1.0f;
+	viewport.TopLeftX = 0.0f;
+	viewport.TopLeftY = 0.0f;
+
+	// Create the viewport.
+	m_deviceContext->RSSetViewports(1, &viewport);
+
+	// Setup the projection matrix.
+	fieldOfView = (float)D3DX_PI / 4.0f;
+	screenAspect = (float)screenWidth / (float)screenHeight;
+
+	// Create the projection matrix.
+	D3DXMatrixPerspectiveFovLH(&m_projectionMatrix, fieldOfView, screenAspect, screenNear, screenDepth);
+
+	// Inititalize the world matrix to identity.
+	D3DXMatrixIdentity(&m_worldMatrix);
+
+	// Create the ortho matrix.
+	D3DXMatrixOrthoLH(&m_orthoMatrix, (float)screenWidth, (float)screenHeight, screenNear, screenDepth);
+
+	return true;
 }
