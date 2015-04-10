@@ -318,10 +318,6 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 
 void D3DClass::Shutdown()
 {
-	// Before shutting down switch to windowed mode to avoid an exception.
-	if(m_swapChain)
-		m_swapChain->SetFullscreenState(false, NULL);
-
 	if(m_rasterState)
 	{
 		m_rasterState->Release();
@@ -366,6 +362,9 @@ void D3DClass::Shutdown()
 
 	if(m_swapChain)
 	{
+		// Always set the screen state to fullscreen before releasing the swap chain. Not doing so throws an exception.
+		m_swapChain->SetFullscreenState(false, NULL);
+
 		m_swapChain->Release();
 		m_swapChain = 0;
 	}
