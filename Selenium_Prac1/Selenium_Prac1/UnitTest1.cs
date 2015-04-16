@@ -19,6 +19,7 @@ namespace Selenium_Prac1
             ChromeDriver.Navigate().GoToUrl("http://www.google.com/");
             ChromeDriver.FindElementById("gbqfq").SendKeys("Google");
             ChromeDriver.FindElementById("gbqfq").SendKeys(Keys.Enter);
+            System.Threading.Thread.Sleep(500);
         }
 
         [TestCleanup]
