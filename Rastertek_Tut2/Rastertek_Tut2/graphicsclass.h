@@ -12,6 +12,7 @@
 // Includes
 //-----------------------------
 #include <Windows.h>
+#include <fstream>
 #include "d3dclass.h"
 
 ///////////////////////////////

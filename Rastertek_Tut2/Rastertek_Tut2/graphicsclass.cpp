@@ -22,6 +22,9 @@ GraphicsClass::~GraphicsClass() {}
 bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 {
 	bool result;
+	std::ofstream log;
+	char vgaName[256];
+	int vgaMemMB;
 
 	// Create the Direct3D object.
 	m_D3D = new D3DClass;
@@ -35,6 +38,13 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		MessageBox(hwnd, "Could not initialize Direct3D.", "Error", MB_OK);
 		return false;
 	}
+
+	// Write the VGA info to a log file.
+	m_D3D->GetVideoCardInfo(vgaName, vgaMemMB);
+	log.open("vgaInfo.log");
+	log << "Video Graphics Adapter = " << vgaName << std::endl
+		<< "Available Video Memory = " << vgaMemMB << " MB";
+	log.close();
 
 	return true;
 }
