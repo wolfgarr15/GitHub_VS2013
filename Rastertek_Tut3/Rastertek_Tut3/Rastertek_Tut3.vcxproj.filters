@@ -61,11 +61,11 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="psColor.hlsl">
-      <Filter>Shaders\Pixel</Filter>
-    </FxCompile>
-    <FxCompile Include="vsColor.hlsl">
+    <None Include="vColor.hlsli">
       <Filter>Shaders\Vertex</Filter>
-    </FxCompile>
+    </None>
+    <None Include="pColor.hlsli">
+      <Filter>Shaders\Pixel</Filter>
+    </None>
   </ItemGroup>
 </Project>
