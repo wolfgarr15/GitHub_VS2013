@@ -224,5 +224,47 @@ bool ColorShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	MatrixBufferType* dataPtr;
 	UINT bufferNumber;
 
-	// HERE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	// Transpose the matrices to DirectX 11 use.
+	D3DXMatrixTranspose(&worldMatrix, &worldMatrix);
+	D3DXMatrixTranspose(&viewMatrix, &viewMatrix);
+	D3DXMatrixTranspose(&projectionMatrix, &projectionMatrix);
+
+	// Lock the matrix buffer so it can be written to.
+	result = deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if (FAILED(result))
+		return false;
+
+	// Get the pointer to the data in the matrix buffer.
+	dataPtr = (MatrixBufferType*)mappedResource.pData;
+
+	// Copy the matrices into the matrix buffer.
+	dataPtr->world = worldMatrix;
+	dataPtr->view = viewMatrix;
+	dataPtr->projection = projectionMatrix;
+
+	// Unlock the matrix buffer.
+	deviceContext->Unmap(m_matrixBuffer, 0);
+
+	// Set the position of the matrix buffer in the vertex shader.
+	bufferNumber = 0;
+
+	// Set the matrix buffer in the vertex shader, with updated values.
+	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
+
+	return true;
+}
+
+void ColorShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)
+{
+	// Set the vertex input layout.
+	deviceContext->IASetInputLayout(m_layout);
+
+	// Set the vertex and pixel shaders that will be used to render this triangle.
+	deviceContext->VSSetShader(m_vertexShader, NULL, 0);
+	deviceContext->PSSetShader(m_pixelShader, NULL, 0);
+
+	// Render the triangle.
+	deviceContext->DrawIndexed(indexCount, 0, 0);
+
+	return;
 }
