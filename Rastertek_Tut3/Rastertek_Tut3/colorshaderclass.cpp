@@ -1,6 +1,15 @@
+///////////////////////////////////
+// Filename: colorshaderclass.cpp
+///////////////////////////////////
+
+////////////////////////////////
+// Class Header
+//------------------------------
 #include "colorshaderclass.h"
 
-
+///////////////////////////////
+// Class Definition
+//-----------------------------
 ColorShaderClass::ColorShaderClass()
 {
 	m_vertexShader = 0;
