@@ -43,7 +43,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Create the camera object.
-	m_Camera = new CameraClass(0.0f, 0.0f, -10.0f);
+	m_Camera = new CameraClass(0.0f, 0.0f, -6.0f);
 	if (!m_Camera)
 		return false;
 
