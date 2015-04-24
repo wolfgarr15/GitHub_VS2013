@@ -41,7 +41,7 @@ public:
 				ID3D11ShaderResourceView* texture);
 
 private:
-	bool InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vFilname, WCHAR* pFilename);
+	bool InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilename, WCHAR* psFilename);
 	void ShutdownShader();
 	void OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* filename);
 
