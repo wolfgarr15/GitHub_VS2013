@@ -135,8 +135,6 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 
 	// Give the subresource a pointer to the index data.
 	indexData.pSysMem = indices;
-	indexData.SysMemPitch = 0;
-	indexData.SysMemSlicePitch = 0;
 
 	// Create the index buffer.
 	result = device->CreateBuffer(&indexBufferDesc, &indexData, &m_indexBuffer);

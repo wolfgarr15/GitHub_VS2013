@@ -15,7 +15,7 @@ GraphicsClass::GraphicsClass()
 	m_D3D = 0;
 	m_Camera = 0;
 	m_Model = 0;
-	m_ColorShader = 0;
+	m_TextureShader = 0;
 }
 
 GraphicsClass::GraphicsClass(const GraphicsClass& src) {}
@@ -53,7 +53,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 
 	// Initialize the model object.
-	result = m_Model->Initialize(m_D3D->GetDevice());
+	result = m_Model->Initialize(m_D3D->GetDevice(), L"SomeTexture.dds");
 	if (!result)
 	{
 		MessageBox(hwnd, "Could not initialize the model object.", "Error", MB_OK);
@@ -61,15 +61,15 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Create the color shader object.
-	m_ColorShader = new ColorShaderClass;
-	if (!m_ColorShader)
+	m_TextureShader = new TextureShaderClass;
+	if (!m_TextureShader)
 		return false;
 
 	// Initialize the color shader object.
-	result = m_ColorShader->Initialize(m_D3D->GetDevice(), hwnd);
+	result = m_TextureShader->Initialize(m_D3D->GetDevice(), hwnd);
 	if (!result)
 	{
-		MessageBox(hwnd, "Could not initialize the color shader object.", "Error", MB_OK);
+		MessageBox(hwnd, "Could not initialize the texture shader object.", "Error", MB_OK);
 		return false;
 	}
 
@@ -86,11 +86,11 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 void GraphicsClass::Shutdown()
 {
 	// Release the color shader object.
-	if (m_ColorShader)
+	if (m_TextureShader)
 	{
-		m_ColorShader->Shutdown();
-		delete m_ColorShader;
-		m_ColorShader = 0;
+		m_TextureShader->Shutdown();
+		delete m_TextureShader;
+		m_TextureShader = 0;
 	}
 
 	// Release the model object.
@@ -137,8 +137,9 @@ bool GraphicsClass::Render()
 	D3DXMATRIX viewMatrix;
 	D3DXMATRIX projectionMatrix;
 	bool result;
+
 	// Clear the buffers to begin the scene.
-	m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
+	m_D3D->BeginScene(1.0f, 0.0f, 0.0f, 1.0f);
 
 	// Generate the view matrix based on the camera's position.
 	m_Camera->Render();
@@ -152,7 +153,9 @@ bool GraphicsClass::Render()
 	m_Model->Render(m_D3D->GetDeviceContext());
 
 	// Render the scene using the shader.
-	result = m_ColorShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+	result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), 
+									worldMatrix, viewMatrix, projectionMatrix,
+									m_Model->GetTexture());
 	if (!result)
 		return false;
 
