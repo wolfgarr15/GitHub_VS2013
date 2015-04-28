@@ -27,7 +27,7 @@ bool TextureShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
 	bool result;
 
 	// Initialize the shaders.
-	result = InitializeShader(device, hwnd, L"vTexture.hlsli", L"pTexture.hlsli");
+	result = InitializeShader(device, hwnd, L"vsTexture.hlsli", L"psTexture.hlsli");
 	if (!result)
 		return false;
 
@@ -290,7 +290,7 @@ bool TextureShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
 
 	// Set the shader texture resource in the pixel shader.
-	deviceContext->PSGetShaderResources(0, 1, &texture);
+	deviceContext->PSSetShaderResources(0, 1, &texture);
 
 	return true;
 }

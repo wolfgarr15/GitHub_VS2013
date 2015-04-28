@@ -24,11 +24,11 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="vTexture.hlsli">
-      <Filter>Shaders\Vertex</Filter>
-    </None>
-    <None Include="pTexture.hlsli">
+    <None Include="psTexture.hlsli">
       <Filter>Shaders\Pixel</Filter>
+    </None>
+    <None Include="vsTexture.hlsli">
+      <Filter>Shaders\Vertex</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

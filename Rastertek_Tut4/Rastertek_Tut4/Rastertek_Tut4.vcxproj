@@ -67,8 +67,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="pTexture.hlsli" />
-    <None Include="vTexture.hlsli" />
+    <None Include="psTexture.hlsli" />
+    <None Include="vsTexture.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cameraclass.cpp" />
