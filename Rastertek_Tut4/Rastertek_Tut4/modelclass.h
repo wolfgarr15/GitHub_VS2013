@@ -28,7 +28,7 @@ private:
 	};
 
 public:
-	ModelClass()
+	ModelClass();
 	ModelClass(const ModelClass& src);
 	~ModelClass();
 
