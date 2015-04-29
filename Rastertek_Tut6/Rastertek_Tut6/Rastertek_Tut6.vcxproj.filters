@@ -97,4 +97,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Cube.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="Sphere.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+  </ItemGroup>
 </Project>

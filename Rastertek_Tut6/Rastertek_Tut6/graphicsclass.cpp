@@ -54,7 +54,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 
 	// Initialize the model object.
-	result = m_Model->Initialize(m_D3D->GetDevice(), L"SomeTexture.dds");
+	result = m_Model->Initialize(m_D3D->GetDevice(), "Cube.txt", L"SomeTexture.dds");
 	if (!result)
 	{
 		MessageBox(hwnd, "Could not initialize the model object.", "Error", MB_OK);
@@ -67,7 +67,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 
 	// Initialize the light object.
-	m_Light->SetDiffuseColor(1.0f, 0.0f, 1.0f, 1.0f);
+	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light->SetDirection(0.0f, 0.0f, 1.0f);
 
 	// Create the color shader object.

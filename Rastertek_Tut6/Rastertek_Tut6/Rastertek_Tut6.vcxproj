@@ -96,6 +96,10 @@
     <ClCompile Include="textureclass.cpp" />
     <ClCompile Include="winmain.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Cube.txt" />
+    <Text Include="Sphere.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
