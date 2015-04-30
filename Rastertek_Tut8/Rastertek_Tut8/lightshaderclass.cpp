@@ -17,7 +17,6 @@ LightShaderClass::LightShaderClass()
 	m_layout = 0;
 	m_samplerState = 0;
 	m_matrixBuffer = 0;
-	m_cameraBuffer = 0;
 	m_lightBuffer = 0;
 }
 
@@ -47,17 +46,12 @@ void LightShaderClass::Shutdown()
 bool LightShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount,
 								D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix,
 								ID3D11ShaderResourceView* texture,
-								D3DXVECTOR3 lightDirection, D3DXVECTOR4 ambientColor, D3DXVECTOR4 diffuseColor,
-								D3DXVECTOR3 cameraPosition, D3DXVECTOR4 specularColor, float specularPower)
+								D3DXVECTOR3 lightDirection, D3DXVECTOR4 ambientColor, D3DXVECTOR4 diffuseColor)
 {
 	bool result;
 
 	// Set the shader parameters.
-	result = SetShaderParameters(deviceContext, 
-								worldMatrix, viewMatrix, projectionMatrix, 
-								texture, 
-								lightDirection, ambientColor, diffuseColor,
-								cameraPosition, specularColor, specularPower);
+	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, texture, lightDirection, ambientColor, diffuseColor);
 	if (!result)
 		return false;
 
@@ -77,7 +71,6 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* 
 	UINT numElements;
 	D3D11_BUFFER_DESC matrixBufferDesc;
 	D3D11_SAMPLER_DESC samplerDesc;
-	D3D11_BUFFER_DESC cameraBufferDesc;
 	D3D11_BUFFER_DESC lightBufferDesc;
 
 	// Initialize pointers.
@@ -197,24 +190,11 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* 
 	if (FAILED(result))
 		return false;
 
-	// Setup the description of the camera buffer.
-	cameraBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	cameraBufferDesc.ByteWidth = sizeof(CameraBufferType);
-	cameraBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cameraBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cameraBufferDesc.MiscFlags = 0;
-	cameraBufferDesc.StructureByteStride = 0;
-
-	// Create the camera buffer from the description.
-	result = device->CreateBuffer(&cameraBufferDesc, NULL, &m_cameraBuffer);
-	if (FAILED(result))
-		return false;
-
 	// Setup the description of the light buffer.
 	lightBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	lightBufferDesc.ByteWidth = sizeof(LightBufferType);
 	lightBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	lightBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	lightBufferDesc.CPUAccessFlags = D3D10_CPU_ACCESS_WRITE;
 	lightBufferDesc.MiscFlags = 0;
 	lightBufferDesc.StructureByteStride = 0;
 
@@ -233,13 +213,6 @@ void LightShaderClass::ShutdownShader()
 	{
 		m_lightBuffer->Release();
 		m_lightBuffer = 0;
-	}
-
-	// Release the camera object.
-	if (m_cameraBuffer)
-	{
-		m_cameraBuffer->Release();
-		m_cameraBuffer = 0;
 	}
 
 	// Release the sampler state.
@@ -315,14 +288,12 @@ void LightShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND h
 bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 											D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix,
 											ID3D11ShaderResourceView* texture,
-											D3DXVECTOR3 lightDirection, D3DXVECTOR4 ambientColor, D3DXVECTOR4 diffuseColor,
-											D3DXVECTOR3 cameraPosition, D3DXVECTOR4 specularColor, float specularPower)
+											D3DXVECTOR3 lightDirection, D3DXVECTOR4 ambientColor, D3DXVECTOR4 diffuseColor)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	MatrixBufferType* dataPtr;
-	CameraBufferType* dataPtr2;
-	LightBufferType* dataPtr3;
+	LightBufferType* dataPtr2;
 	UINT bufferNumber;
 
 	// Transpose the matrices, as required by DirectX 11.
@@ -352,41 +323,18 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	// Set the constant buffer in the vertex shader with the updated values.
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
 
-	// Lock the camera buffer so it can be written to.
-	result = deviceContext->Map(m_cameraBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	if (FAILED(result))
-		return false;
-
-	// Get a pointer to the camera buffer.
-	dataPtr2 = (CameraBufferType*)mappedResource.pData;
-
-	// Copy the camera data to the buffer.
-	dataPtr2->cameraPosition = cameraPosition;
-	dataPtr2->padding = 0.0f;
-
-	// Unlock the camera buffer.
-	deviceContext->Unmap(m_cameraBuffer, 0);
-
-	// Set the position of the camera buffer in the vertex shader.
-	bufferNumber = 1;
-
-	// Set the camera buffer in the vertex shader.
-	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_cameraBuffer);
-
 	// Lock the light buffer so it can be written to.
 	result = deviceContext->Map(m_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (FAILED(result))
 		return false;
 
 	// Get a pointer to the light buffer.
-	dataPtr3 = (LightBufferType*)mappedResource.pData;
+	dataPtr2 = (LightBufferType*)mappedResource.pData;
 
 	// Copy the light data to the buffer.
-	dataPtr3->lightDirection = lightDirection;
-	dataPtr3->ambientColor = ambientColor;
-	dataPtr3->diffuseColor = diffuseColor;
-	dataPtr3->specularColor = specularColor;
-	dataPtr3->specularPower = specularPower;
+	dataPtr2->lightDirection = lightDirection;
+	dataPtr2->ambientColor = ambientColor;
+	dataPtr2->diffuseColor = diffuseColor;
 
 	// Unlock the light buffer.
 	deviceContext->Unmap(m_lightBuffer, 0);

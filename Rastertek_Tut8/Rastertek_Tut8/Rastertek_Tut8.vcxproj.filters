@@ -24,12 +24,25 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="SomeTexture.dds">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="psLight.hlsli">
       <Filter>Shaders\Pixel</Filter>
     </None>
     <None Include="vsLight.hlsli">
       <Filter>Shaders\Vertex</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Cube.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="Sphere.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cameraclass.h">
@@ -59,11 +72,6 @@
     <ClInclude Include="textureclass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="SomeTexture.dds">
-      <Filter>Resource Files</Filter>
-    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cameraclass.cpp">

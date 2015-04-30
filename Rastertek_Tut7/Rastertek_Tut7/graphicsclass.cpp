@@ -54,7 +54,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 
 	// Initialize the model object.
-	result = m_Model->Initialize(m_D3D->GetDevice(), "Cube.txt", L"SomeTexture.dds");
+	result = m_Model->Initialize(m_D3D->GetDevice(), "Sphere.txt", L"SomeTexture.dds");
 	if (!result)
 	{
 		MessageBox(hwnd, "Could not initialize the model object.", "Error", MB_OK);
@@ -69,7 +69,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	// Initialize the light object.
 	m_Light->SetAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
 	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_Light->SetDirection(1.0f, 0.0f, 0.0f);
+	m_Light->SetDirection(-1.0f, -1.0f, 1.0f);
 
 	// Create the color shader object.
 	m_LightShader = new LightShaderClass;
@@ -165,6 +165,8 @@ bool GraphicsClass::Render(float rotation)
 	D3DXMATRIX projectionMatrix;
 	bool result;
 
+	D3DXMATRIX Rx, Ry, Rz;
+
 	// Clear the buffers to begin the scene.
 	m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -177,7 +179,11 @@ bool GraphicsClass::Render(float rotation)
 	m_D3D->GetProjectionMatrix(projectionMatrix);
 
 	// Rotate the world matrix to spin the model.
-	D3DXMatrixRotationY(&worldMatrix, rotation);
+	D3DXMatrixRotationX(&Rx, rotation);
+	D3DXMatrixRotationY(&Ry, rotation);
+	D3DXMatrixRotationZ(&Rz, rotation);
+
+	worldMatrix = Rx * Ry * Rz * worldMatrix;
 
 	// Put the model on the render pipeline.
 	m_Model->Render(m_D3D->GetDeviceContext());

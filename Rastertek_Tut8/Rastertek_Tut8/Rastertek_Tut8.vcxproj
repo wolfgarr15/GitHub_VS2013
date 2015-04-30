@@ -67,8 +67,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <Image Include="SomeTexture.dds" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="psLight.hlsli" />
     <None Include="vsLight.hlsli" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Cube.txt" />
+    <Text Include="Sphere.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cameraclass.h" />
@@ -80,9 +87,6 @@
     <ClInclude Include="modelclass.h" />
     <ClInclude Include="systemclass.h" />
     <ClInclude Include="textureclass.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="SomeTexture.dds" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cameraclass.cpp" />
