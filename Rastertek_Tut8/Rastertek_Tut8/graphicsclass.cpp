@@ -44,7 +44,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Create the camera object.
-	m_Camera = new CameraClass(0.0f, 0.0f, -6.0f);
+	m_Camera = new CameraClass(0.0f, 0.0f, -7.0f);
 	if (!m_Camera)
 		return false;
 
@@ -54,7 +54,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 
 	// Initialize the model object.
-	result = m_Model->Initialize(m_D3D->GetDevice(), "Sphere.txt", L"SomeTexture.dds");
+	result = m_Model->Initialize(m_D3D->GetDevice(), "Cube.txt", L"SomeTexture.dds");
 	if (!result)
 	{
 		MessageBox(hwnd, "Could not initialize the model object.", "Error", MB_OK);
@@ -69,7 +69,9 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	// Initialize the light object.
 	m_Light->SetAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
 	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_Light->SetDirection(-1.0f, -1.0f, 1.0f);
+	m_Light->SetDirection(0.0f, 0.0f, 1.0f);
+	m_Light->SetSpecularPower(32.0f);
+	m_Light->SetSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// Create the color shader object.
 	m_LightShader = new LightShaderClass;
@@ -192,7 +194,8 @@ bool GraphicsClass::Render(float rotation)
 	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), 
 									worldMatrix, viewMatrix, projectionMatrix,
 									m_Model->GetTexture(),
-									m_Light->GetDirection(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor());
+									m_Light->GetDirection(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(),
+									m_Camera->GetPosition(), m_Light->GetSpecularPower(), m_Light->GetSpecularColor());
 	if (!result)
 		return false;
 

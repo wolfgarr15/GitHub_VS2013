@@ -247,8 +247,6 @@ bool ModelClass::LoadModel(char* modelFimename)
 	fin.get(input);
 	while (input != ':')
 		fin.get(input);
-	fin.get(input);
-	fin.get(input);
 
 	//  Read the vertex data.
 	for (int i = 0; i < m_vertexCount; i++)

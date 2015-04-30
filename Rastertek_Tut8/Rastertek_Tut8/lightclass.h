@@ -25,14 +25,20 @@ public:
 	void SetAmbientColor(float red, float green, float blue, float alpha);
 	void SetDiffuseColor(float red, float green, float blue, float alpha);
 	void SetDirection(float x, float y, float z);
+	void SetSpecularPower(float power);
+	void SetSpecularColor(float red, float green, float blue, float alpha);
 
 	D3DXVECTOR4 GetAmbientColor();
 	D3DXVECTOR4 GetDiffuseColor();
 	D3DXVECTOR3 GetDirection();
+	float GetSpecularPower();
+	D3DXVECTOR4 GetSpecularColor();
 
 private:
 	D3DXVECTOR4 m_ambientColor;
 	D3DXVECTOR4 m_diffuseColor;
 	D3DXVECTOR3 m_direction;
+	float m_specularPower;
+	D3DXVECTOR4 m_specularColor;
 };
 
