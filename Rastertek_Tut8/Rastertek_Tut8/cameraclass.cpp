@@ -52,7 +52,7 @@ void CameraClass::SetRotation(float rotX, float rotY, float rotZ)
 
 D3DXVECTOR3 CameraClass::GetPosition()
 {
-	return D3DXVECTOR3(m_positionX, m_positionY, m_positionY);
+	return D3DXVECTOR3(m_positionX, m_positionY, m_positionZ);
 }
 
 D3DXVECTOR3 CameraClass::GetRotation()
@@ -86,9 +86,9 @@ void CameraClass::Render()
 	lookAt.z = 1.0f;
 
 	// Set the yaw (rot about Y), pitch (rot about X), and roll (rot about Z).
-	pitch = m_rotationX * (D3DX_PI / 180.0f);
-	yaw = m_rotationY * (D3DX_PI / 180.0f);
-	roll = m_rotationZ * (D3DX_PI / 180.0f);
+	pitch = m_rotationX * ((float)D3DX_PI / 180.0f);
+	yaw = m_rotationY * ((float)D3DX_PI / 180.0f);
+	roll = m_rotationZ * ((float)D3DX_PI / 180.0f);
 
 	// Create the rotation matrix from the yaw, pitch, and roll.
 	D3DXMatrixRotationYawPitchRoll(&rotationMatrix, yaw, pitch, roll);
