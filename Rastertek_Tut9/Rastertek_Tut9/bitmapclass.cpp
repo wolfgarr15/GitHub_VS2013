@@ -201,9 +201,9 @@ bool BitmapClass::UpdateBuffers(ID3D11DeviceContext* deviceContext, int position
 	m_previousPosY = positionY;
 
 	// Calculate the screen coordinates of the sides of the image. 
-	left = (float)positionX - (float)(m_bitmapWidth / 2);
+	left = (float)positionX - 0.5f * (float)m_screenWidth;
 	right = left + (float)m_bitmapWidth;
-	bottom = (float)positionY - (float)(m_bitmapHeight / 2);                 // <----- CHECK THIS STUFF !!!
+	bottom = (float)positionY - 0.5f * (float)m_screenHeight;
 	top = bottom + (float)m_bitmapHeight;
 
 	// Create a temporary vertex array and fill it with the new values.
@@ -264,7 +264,7 @@ void BitmapClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 	deviceContext->IASetVertexBuffers(0, 1, &m_vertexBuffer, &stride, &offset);
 
 	// Set the index buffer.
-	deviceContext->IASetIndexBuffer(&m_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	deviceContext->IASetIndexBuffer(m_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
 	// Set the render topology type.
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

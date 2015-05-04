@@ -13,8 +13,8 @@
 #include <fstream>
 #include "d3dclass.h"
 #include "cameraclass.h"
-#include "modelclass.h"
 #include "textureshaderclass.h"
+#include "bitmapclass.h"
 
 ///////////////////////////////
 // Globals
@@ -44,7 +44,7 @@ private:
 private:
 	D3DClass* m_D3D;
 	CameraClass* m_Camera;
-	ModelClass* m_Model;
 	TextureShaderClass* m_TextureShader;
+	BitmapClass* m_Bitmap;
 };
 

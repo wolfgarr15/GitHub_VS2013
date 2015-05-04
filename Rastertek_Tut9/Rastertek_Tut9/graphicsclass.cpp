@@ -14,8 +14,8 @@ GraphicsClass::GraphicsClass()
 {
 	m_D3D = 0;
 	m_Camera = 0;
-	m_Model = 0;
 	m_TextureShader = 0;
+	m_Bitmap = 0;
 }
 
 GraphicsClass::GraphicsClass(const GraphicsClass& src) {}
@@ -47,19 +47,6 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	if (!m_Camera)
 		return false;
 
-	// Create the model object.
-	m_Model = new ModelClass;
-	if (!m_Model)
-		return false;
-
-	// Initialize the model object.
-	result = m_Model->Initialize(m_D3D->GetDevice(), L"SomeTexture.dds");
-	if (!result)
-	{
-		MessageBox(hwnd, "Could not initialize the model object.", "Error", MB_OK);
-		return false;
-	}
-
 	// Create the color shader object.
 	m_TextureShader = new TextureShaderClass;
 	if (!m_TextureShader)
@@ -70,6 +57,19 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	if (!result)
 	{
 		MessageBox(hwnd, "Could not initialize the texture shader object.", "Error", MB_OK);
+		return false;
+	}
+
+	// Create the bitmap object.
+	m_Bitmap = new BitmapClass;
+	if (!m_Bitmap)
+		return false;
+
+	// Initialize the bitmap object.
+	result = m_Bitmap->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight, L"SomeTexture.dds", 256, 256);
+	if (!result)
+	{
+		MessageBox(hwnd, "Could not initialize the bitmap object.", "Error.", MB_OK);
 		return false;
 	}
 
@@ -85,20 +85,20 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 void GraphicsClass::Shutdown()
 {
+	// Release the bitmap object.
+	if (m_Bitmap)
+	{
+		m_Bitmap->Shutdown();
+		delete m_Bitmap;
+		m_Bitmap = 0;
+	}
+
 	// Release the color shader object.
 	if (m_TextureShader)
 	{
 		m_TextureShader->Shutdown();
 		delete m_TextureShader;
 		m_TextureShader = 0;
-	}
-
-	// Release the model object.
-	if (m_Model)
-	{
-		m_Model->Shutdown();
-		delete m_Model;
-		m_Model = 0;
 	}
 
 	// Release the camera object.
@@ -136,6 +136,7 @@ bool GraphicsClass::Render()
 	D3DXMATRIX worldMatrix;
 	D3DXMATRIX viewMatrix;
 	D3DXMATRIX projectionMatrix;
+	D3DXMATRIX orthoMatrix;
 	bool result;
 
 	// Clear the buffers to begin the scene.
@@ -148,16 +149,25 @@ bool GraphicsClass::Render()
 	m_D3D->GetWorldMatrix(worldMatrix);
 	m_Camera->GetViewMatrix(viewMatrix);
 	m_D3D->GetProjectionMatrix(projectionMatrix);
+	m_D3D->GetOrthoMatrix(orthoMatrix);
 
-	// Put the model on the render pipeline.
-	m_Model->Render(m_D3D->GetDeviceContext());
+	// Turn off the Z-buffer off to begin 2D rendering.
+	m_D3D->TurnZBufferOff();
 
-	// Render the scene using the shader.
-	result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), 
-									worldMatrix, viewMatrix, projectionMatrix,
-									m_Model->GetTexture());
+	// Put the bitmap on the render pipeline.
+	result = m_Bitmap->Render(m_D3D->GetDeviceContext(), 100, 100);
 	if (!result)
 		return false;
+
+	// Render the scene using the shader.
+	result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_Bitmap->GetIndexCount(), 
+									worldMatrix, viewMatrix, orthoMatrix,                    // <--- NOTE: Use the ortho matrix
+									m_Bitmap->GetTexture());							     // in place of the projection matrix for 2D rendering!
+	if (!result)
+		return false;
+
+	// Turn off the Z-buffer on at the end of 2D rendering.
+	m_D3D->TurnZBufferOn();
 
 	// Present the rendered scene.
 	m_D3D->EndScene();
