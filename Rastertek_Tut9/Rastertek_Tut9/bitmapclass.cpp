@@ -163,3 +163,140 @@ bool BitmapClass::InitializeBuffers(ID3D11Device* device)
 
 	return true;
 }
+
+void BitmapClass::ShutdownBuffers()
+{
+	if (m_indexBuffer)
+	{
+		m_indexBuffer->Release();
+		m_indexBuffer = 0;
+	}
+
+	if (m_vertexBuffer)
+	{
+		m_vertexBuffer->Release();
+		m_vertexBuffer = 0;
+	}
+
+	return;
+}
+
+bool BitmapClass::UpdateBuffers(ID3D11DeviceContext* deviceContext, int positionX, int positionY)
+{
+	float left;
+	float right;
+	float top;
+	float bottom;
+	VertexType* vertices;
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	VertexType* verticesPtr;
+	HRESULT result;
+
+	// If the position of the bitmap image has not changed, there is nothing to update so return.
+	if ((positionX == m_previousPosX) && (positionY == m_previousPosY))
+		return true;
+
+	// If it has changed, update the position.
+	m_previousPosX = positionX;
+	m_previousPosY = positionY;
+
+	// Calculate the screen coordinates of the sides of the image. 
+	left = (float)positionX - (float)(m_bitmapWidth / 2);
+	right = left + (float)m_bitmapWidth;
+	bottom = (float)positionY - (float)(m_bitmapHeight / 2);                 // <----- CHECK THIS STUFF !!!
+	top = bottom + (float)m_bitmapHeight;
+
+	// Create a temporary vertex array and fill it with the new values.
+	vertices = new VertexType[m_vertexCount];
+	if (!vertices)
+		return false;
+
+	vertices[0].position = D3DXVECTOR3(left, bottom, 0.0f);  // bottom left
+	vertices[0].texture = D3DXVECTOR2(0.0f, 1.0f);
+
+	vertices[1].position = D3DXVECTOR3(left, top, 0.0f);     // top left
+	vertices[1].texture = D3DXVECTOR2(0.0f, 0.0f);
+
+	vertices[2].position = D3DXVECTOR3(right, top, 0.0f);    // top right
+	vertices[2].texture = D3DXVECTOR2(1.0f, 0.0f);
+
+
+	vertices[3].position = D3DXVECTOR3(right, top, 0.0f);    // top right
+	vertices[3].texture = D3DXVECTOR2(1.0f, 0.0f);
+
+	vertices[4].position = D3DXVECTOR3(right, bottom, 0.0f); // bottom right
+	vertices[4].texture = D3DXVECTOR2(1.0f, 1.0f);
+
+	vertices[5].position = D3DXVECTOR3(left, bottom, 0.0f);  // bottom left
+	vertices[5].texture = D3DXVECTOR2(0.0f, 1.0f);
+
+	// Lock the vertex buffer so it can be written to.
+	result = deviceContext->Map(m_vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if (FAILED(result))
+		return false;
+
+	// Get a pointer to the vertex buffer.
+	verticesPtr = (VertexType*)mappedResource.pData;
+
+	// Copy the data into the vertex buffer.
+	memcpy(verticesPtr, (void*)vertices, sizeof(VertexType) * m_vertexCount);
+
+	// Unlock the vertex buffer.
+	deviceContext->Unmap(m_vertexBuffer, 0);
+
+	// Release the temporary vertex array.
+	delete[] vertices;
+	vertices = 0;
+
+	return true;
+}
+
+void BitmapClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
+{
+	UINT stride;
+	UINT offset;
+
+	// Set the vertexx buffer stride and offset.
+	stride = sizeof(VertexType);
+	offset = 0;
+
+	// Set the vertex buffer on the render pipeline.
+	deviceContext->IASetVertexBuffers(0, 1, &m_vertexBuffer, &stride, &offset);
+
+	// Set the index buffer.
+	deviceContext->IASetIndexBuffer(&m_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+	// Set the render topology type.
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	return;
+}
+
+bool BitmapClass::LoadTexture(ID3D11Device* device, WCHAR* texFilename)
+{
+	bool result;
+
+	// Create the texture object.
+	m_texture = new TextureClass;
+	if (!m_texture)
+		return false;
+
+	// Initialize the texture object.
+	result = m_texture->Initialize(device, texFilename);
+	if (!result)
+		return false;
+
+	return true;
+}
+
+void BitmapClass::ReleaseTexture()
+{
+	if (m_texture)
+	{
+		m_texture->Shutdown();
+		delete m_texture;
+		m_texture = 0;
+	}
+
+	return;
+}
