@@ -66,7 +66,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 
 	// Initialize the bitmap object.
-	result = m_Bitmap->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight, L"SomeTexture.dds", 64, 64);
+	result = m_Bitmap->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight, L"SomeTexture.dds", 256, 256);
 	if (!result)
 	{
 		MessageBox(hwnd, "Could not initialize the bitmap object.", "Error.", MB_OK);
