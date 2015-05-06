@@ -1,5 +1,5 @@
 ///////////////////////////////////
-// Filename: textureshaderclass.h
+// Filename: fontshaderclass.h
 ///////////////////////////////////
 
 ///////////////////////////////////
@@ -19,7 +19,7 @@ using namespace std;
 ///////////////////////////////
 // Class Declaration
 //-----------------------------
-class TextureShaderClass
+class FontShaderClass
 {
 private:
 	struct MatrixBufferType
@@ -29,16 +29,21 @@ private:
 		D3DXMATRIX projection;
 	};
 
+	struct PixelBufferType
+	{
+		D3DXVECTOR4 pixelColor;
+	};
+
 public:
-	TextureShaderClass();
-	TextureShaderClass(const TextureShaderClass& src);
-	~TextureShaderClass();
+	FontShaderClass();
+	FontShaderClass(const FontShaderClass& src);
+	~FontShaderClass();
 
 	bool Initialize(ID3D11Device* device, HWND hwnd);
 	void Shutdown();
 	bool Render(ID3D11DeviceContext* deviceContext, int indexCount,
 				D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix,
-				ID3D11ShaderResourceView* texture);
+				ID3D11ShaderResourceView* texture, D3DXVECTOR4 pixelColor);
 
 private:
 	bool InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilename, WCHAR* psFilename);
@@ -47,7 +52,7 @@ private:
 
 	bool SetShaderParameters(ID3D11DeviceContext* deviceContext,
 							D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix,
-							ID3D11ShaderResourceView* texture);
+							ID3D11ShaderResourceView* texture, D3DXVECTOR4 pixelColor);
 	void RenderShader(ID3D11DeviceContext* deviceContext, int indexCount);
 
 private:
@@ -56,5 +61,6 @@ private:
 	ID3D11InputLayout* m_layout;
 	ID3D11Buffer* m_matrixBuffer;
 	ID3D11SamplerState* m_samplerState;
+	ID3D11Buffer* m_pixelBuffer;
 };
 

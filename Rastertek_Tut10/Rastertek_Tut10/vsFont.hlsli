@@ -1,5 +1,5 @@
 //////////////////////////////////
-// Filename: vsTexture.hlsli
+// Filename: vsFont.hlsli
 //////////////////////////////////
 
 //////////////////////////////////
@@ -30,7 +30,7 @@ struct PixelInputType
 /////////////////////////////////
 // Vertex Shader
 //-------------------------------
-PixelInputType TextureVertexShader(VertexInputType input)
+PixelInputType FontVertexShader(VertexInputType input)
 {
 	PixelInputType output;
 

@@ -1,5 +1,5 @@
 //////////////////////////////////
-// Filename: psTexture.hlsli
+// Filename: psFont.hlsli
 //////////////////////////////////
 
 //////////////////////////////////
@@ -7,6 +7,11 @@
 //--------------------------------
 Texture2D shaderTexture;
 SamplerState sampleType;
+
+cbuffer PixelBuffer
+{
+	float4 pixelColor;
+};
 
 /////////////////////////////////
 // Typedefs
@@ -20,12 +25,21 @@ struct PixelInputType
 /////////////////////////////////
 // Pixel Shader
 //-------------------------------
-float4 TexturePixelShader(PixelInputType input) : SV_TARGET
+float4 FontPixelShader(PixelInputType input) : SV_TARGET
 {
-	float4 textureColor;
+	float4 color;
 
 	// Sample the input texture.
-	textureColor = shaderTexture.Sample(sampleType, input.tex);
+	color = shaderTexture.Sample(sampleType, input.tex);
 
-	return textureColor;
+	if (color.r == 0.0f)
+		color.a = 0.0f;
+
+	else
+	{
+		color.a = 1.0f;
+		color = color * pixelColor;
+	}
+
+	return color;
 }
