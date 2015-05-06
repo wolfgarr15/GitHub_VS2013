@@ -84,6 +84,7 @@
     <ClInclude Include="inputclass.h" />
     <ClInclude Include="modelclass.h" />
     <ClInclude Include="systemclass.h" />
+    <ClInclude Include="textclass.h" />
     <ClInclude Include="textureclass.h" />
     <ClInclude Include="fontshaderclass.h" />
   </ItemGroup>
@@ -97,6 +98,7 @@
     <ClCompile Include="inputclass.cpp" />
     <ClCompile Include="modelclass.cpp" />
     <ClCompile Include="systemclass.cpp" />
+    <ClCompile Include="textclass.cpp" />
     <ClCompile Include="textureclass.cpp" />
     <ClCompile Include="fontshaderclass.cpp" />
     <ClCompile Include="winmain.cpp" />
