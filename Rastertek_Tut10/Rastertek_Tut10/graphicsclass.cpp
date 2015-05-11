@@ -14,8 +14,7 @@ GraphicsClass::GraphicsClass()
 {
 	m_D3D = 0;
 	m_Camera = 0;
-	m_TextureShader = 0;
-	m_Bitmap = 0;
+	m_Text = 0;
 }
 
 GraphicsClass::GraphicsClass(const GraphicsClass& src) {}
@@ -25,6 +24,7 @@ GraphicsClass::~GraphicsClass() {}
 bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 {
 	bool result;
+	D3DXMATRIX baseViewMatrix;
 	std::ofstream log;
 	char vgaName[256];
 	int vgaMemMB;
@@ -47,29 +47,19 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	if (!m_Camera)
 		return false;
 
-	// Create the color shader object.
-	m_TextureShader = new TextureShaderClass;
-	if (!m_TextureShader)
+	// Get the base view matrix from the initialize camera.
+	m_Camera->Render();
+	m_Camera->GetViewMatrix(baseViewMatrix);
+
+	// Create and initialize the text class object.
+	m_Text = new TextClass;
+	if (!m_Text)
 		return false;
 
-	// Initialize the color shader object.
-	result = m_TextureShader->Initialize(m_D3D->GetDevice(), hwnd);
+	result = m_Text->Initialize(m_D3D->GetDevice(), m_D3D->GetDeviceContext(), hwnd, screenWidth, screenHeight, baseViewMatrix);
 	if (!result)
 	{
-		MessageBox(hwnd, "Could not initialize the texture shader object.", "Error", MB_OK);
-		return false;
-	}
-
-	// Create the bitmap object.
-	m_Bitmap = new BitmapClass;
-	if (!m_Bitmap)
-		return false;
-
-	// Initialize the bitmap object.
-	result = m_Bitmap->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight, L"SomeTexture.dds", 256, 256);
-	if (!result)
-	{
-		MessageBox(hwnd, "Could not initialize the bitmap object.", "Error.", MB_OK);
+		MessageBox(hwnd, "Could not initialize the text object.", "Error", MB_OK);
 		return false;
 	}
 
@@ -85,20 +75,12 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 void GraphicsClass::Shutdown()
 {
-	// Release the bitmap object.
-	if (m_Bitmap)
+	// Release the text object.
+	if (m_Text)
 	{
-		m_Bitmap->Shutdown();
-		delete m_Bitmap;
-		m_Bitmap = 0;
-	}
-
-	// Release the color shader object.
-	if (m_TextureShader)
-	{
-		m_TextureShader->Shutdown();
-		delete m_TextureShader;
-		m_TextureShader = 0;
+		m_Text->Shutdown();
+		delete m_Text;
+		m_Text = 0;
 	}
 
 	// Release the camera object.
@@ -154,17 +136,16 @@ bool GraphicsClass::Render()
 	// Turn off the Z-buffer off to begin 2D rendering.
 	m_D3D->TurnZBufferOff();
 
-	// Put the bitmap on the render pipeline.
-	result = m_Bitmap->Render(m_D3D->GetDeviceContext(), 100, 100);
+	// Turn on alpha blending.
+	m_D3D->TurnOnAlphaBlending();
+
+	// Render the text.
+	result = m_Text->Render(m_D3D->GetDeviceContext(), worldMatrix, orthoMatrix);
 	if (!result)
 		return false;
 
-	// Render the scene using the shader.
-	result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_Bitmap->GetIndexCount(), 
-									worldMatrix, viewMatrix, orthoMatrix,                    // <--- NOTE: Use the ortho matrix
-									m_Bitmap->GetTexture());							     // in place of the projection matrix for 2D rendering!
-	if (!result)
-		return false;
+	// Turn off alpha blending.
+	m_D3D->TurnOffAlphaBlending();
 
 	// Turn off the Z-buffer on at the end of 2D rendering.
 	m_D3D->TurnZBufferOn();

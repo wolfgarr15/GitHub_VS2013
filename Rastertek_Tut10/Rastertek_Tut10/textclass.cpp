@@ -58,7 +58,7 @@ bool TextClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCont
 	}
 
 	// Create the sentence objects.
-	m_numSentences = 2;
+	m_numSentences = 5;
 
 	m_sentences = new SentenceType*[m_numSentences];
 	if (!m_sentences)
@@ -74,10 +74,17 @@ bool TextClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCont
 	// Initialize the sentences.
 	for (int i = 0; i < m_numSentences; i++)
 	{
-		result = UpdateSentence(m_sentences[i], "Hello", 100, (100 * (i + 1)), 1.0f, 0.0f, 0.0f, deviceContext);
+		result = InitializeSentence(&m_sentences[i], 100, device);
 		if (!result)
 		{
 			MessageBox(hwnd, "Could not initialize a sentence object.", "Error", MB_OK);
+			return false;
+		}
+
+		result = UpdateSentence(m_sentences[i], "Hello", 100, (100 * (i + 1)), 1.0f, 0.0f, 0.0f, deviceContext);
+		if (!result)
+		{
+			MessageBox(hwnd, "Could not initialize sentence text.", "Error", MB_OK);
 			return false;
 		}
 	}
@@ -192,8 +199,8 @@ bool TextClass::InitializeSentence(SentenceType** sentence, int maxLength, ID3D1
 		return false;
 
 	// Setup the description of the index buffer.
-	indexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	indexBufferDesc.ByteWidth = sizeof(VertexType) * (*sentence)->indexCount;
+	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	indexBufferDesc.ByteWidth = sizeof(ULONG) * (*sentence)->indexCount;
 	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	indexBufferDesc.CPUAccessFlags = 0;
 	indexBufferDesc.MiscFlags = 0;
