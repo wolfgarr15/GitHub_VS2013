@@ -20,16 +20,6 @@ CameraClass::CameraClass()
 	m_rotationZ = 0.0f;
 }
 
-CameraClass::CameraClass(float x, float y, float z)
-{
-	m_positionX = x;
-	m_positionY = y;
-	m_positionZ = z;
-	m_rotationX = 0.0f;
-	m_rotationY = 0.0f;
-	m_rotationZ = 0.0f;
-}
-
 CameraClass::CameraClass(const CameraClass& src) {}
 
 CameraClass::~CameraClass() {}

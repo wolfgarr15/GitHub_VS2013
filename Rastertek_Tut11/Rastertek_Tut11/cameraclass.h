@@ -19,7 +19,6 @@ class CameraClass
 {
 public:
 	CameraClass();
-	CameraClass(float x, float y, float z);
 	CameraClass(const CameraClass& src);
 	~CameraClass();
 

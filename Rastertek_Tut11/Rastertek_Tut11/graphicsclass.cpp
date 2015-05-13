@@ -43,11 +43,12 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Create the camera object.
-	m_Camera = new CameraClass(0.0f, 0.0f, -6.0f);
+	m_Camera = new CameraClass;
 	if (!m_Camera)
 		return false;
 
 	// Get the base view matrix from the initialize camera.
+	m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
 	m_Camera->Render();
 	m_Camera->GetViewMatrix(baseViewMatrix);
 
@@ -56,7 +57,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	if (!m_Text)
 		return false;
 
-	result = m_Text->Initialize(m_D3D->GetDevice(), m_D3D->GetDeviceContext(), hwnd, screenWidth, screenHeight, baseViewMatrix);
+	result = m_Text->Initialize(m_D3D->GetDevice(), m_D3D->GetDeviceContext(), hwnd, screenWidth, screenHeight, baseViewMatrix, 2);
 	if (!result)
 	{
 		MessageBox(hwnd, "Could not initialize the text object.", "Error", MB_OK);
@@ -101,14 +102,16 @@ void GraphicsClass::Shutdown()
 	return;
 }
 
-bool GraphicsClass::Frame()
+bool GraphicsClass::Frame(int mouseX, int mouseY)
 {
 	bool result;
 
-	// Render the graphics scene.
-	result = Render();
-	if(!result)
+	// Set the location of the mouse.
+	result = m_Text->SetMousePosition(m_D3D->GetDeviceContext(), mouseX, mouseY);
+	if (!result)
 		return false;
+
+	m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
 
 	return true;
 }

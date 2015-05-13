@@ -38,8 +38,8 @@ bool SystemClass::Initialize()
 	}
 
 	// Initialize the input object.
-	m_Input->Initialize();
-	if(!m_Input)
+	result = m_Input->Initialize(m_hInstance, m_hWnd, screenWidth, screenHeight);
+	if(!result)
 	{
 		MessageBox(m_hWnd, "Failed to initialize input object.", "Error!", MB_OK);
 		return false;
@@ -94,7 +94,13 @@ void SystemClass::Run()
 			if(!result)
 				done = true;
 		}
+
+		// Check if the user pressed escape to quit the app.
+		if (m_Input->IsEscapePressed())
+			done = true;
 	}
+
+	return;
 }
 
 void SystemClass::Shutdown()
@@ -110,6 +116,7 @@ void SystemClass::Shutdown()
 	// Release the input object.
 	if(m_Input)
 	{
+		m_Input->Shutdown();
 		delete m_Input;
 		m_Input = 0;
 	}
@@ -123,14 +130,25 @@ void SystemClass::Shutdown()
 bool SystemClass::Frame()
 {
 	bool result;
+	int mouseX;
+	int mouseY;
 
-	// Check if the user has pressed the escape key.
-	if(m_Input->IsKeyDown(VK_ESCAPE))
+	// Do the input per-frame processing.
+	result = m_Input->Frame();
+	if (!result)
 		return false;
 
+	// Get the location of the mouse from the input object.
+	m_Input->GetMouseLocation(mouseX, mouseY);
+
 	// Do the frame processing for graphics objects.
-	result = m_Graphics->Frame();
+	result = m_Graphics->Frame(mouseX, mouseY);
 	if(!result)
+		return false;
+
+	// Render the graphics.
+	result = m_Graphics->Render();
+	if (!result)
 		return false;
 
 	return true;
@@ -138,26 +156,7 @@ bool SystemClass::Frame()
 
 LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 {
-	switch(message)
-	{
-		// Check if a key has been pressed down.
-		case WM_KEYDOWN:
-			{
-				m_Input->KeyDown((UINT)wparam);
-				return 0;
-			}
-
-		// Check if a key has been released.
-		case WM_KEYUP:
-			{
-				m_Input->KeyUp((UINT)wparam);
-				return 0;
-			}
-
-		// Send all other input to the Windows message handler.
-		default:
-			return DefWindowProc(hwnd, message, wparam, lparam);
-	}
+	return DefWindowProc(hwnd, message, wparam, lparam);
 }
 
 void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
@@ -165,8 +164,7 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	WNDCLASSEX WndClass;
 	DEVMODE dmScreenSettings;
 	DWORD dwStyle;
-	int posX;
-	int posY;
+	POINT point;
 
 	// Get the application handle.
 	g_AppHandle = this;
@@ -216,8 +214,8 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 		dwStyle = WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP;
 
 		// Set the postion of the window to the top left corner.
-		posX = 0;
-		posY = 0;
+		point.x = 0;
+		point.y = 0;
 	}
 	else
 	{
@@ -229,19 +227,23 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 		dwStyle = WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_OVERLAPPED | WS_SYSMENU | WS_MINIMIZEBOX;
 
 		// Place the window in the middle of the screen.
-		posX = (GetSystemMetrics(SM_CXSCREEN) - screenWidth) / 2;
-		posY = (GetSystemMetrics(SM_CYSCREEN) - screenHeight) / 2;
+		point.x = (GetSystemMetrics(SM_CXSCREEN) - screenWidth) / 2;
+		point.y = (GetSystemMetrics(SM_CYSCREEN) - screenHeight) / 2;
 	}
 
 	// Create the window.
 	m_hWnd = CreateWindowEx(WS_EX_APPWINDOW, m_AppName, m_AppName, dwStyle,
-							posX, posY, screenWidth, screenHeight, 
+							(int)point.x, (int)point.y, screenWidth, screenHeight, 
 							NULL, NULL, m_hInstance, NULL);
 
 	// Show the window and set it as the main focus.
 	ShowWindow(m_hWnd, SW_SHOW);
 	SetForegroundWindow(m_hWnd);
 	SetFocus(m_hWnd);
+
+	// Initialize the cursor position within the window.
+	//ScreenToClient(m_hWnd, &point);
+	//SetCursorPos((int)point.x, (int)point.y);
 
 	return;
 }
