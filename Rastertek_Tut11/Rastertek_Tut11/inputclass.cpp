@@ -29,9 +29,8 @@ bool InputClass::Initialize(HINSTANCE hInstance, HWND hwnd, int screenWidth, int
 	m_screenWidth = screenWidth;
 	m_screenHeight = screenHeight;
 
-	// Initialize the mouse location.
-	m_mouseX = 0;
-	m_mouseY = 0;
+	// Initialize the mouse location in the app window.
+	m_mousePosition = { 0, 0 };
 
 	// Initialize the direct input interface.
 	result = DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_directInput, NULL);
@@ -167,14 +166,14 @@ bool InputClass::ReadMouse()
 void InputClass::ProcessInput()
 {
 	// Update the mouse location.
-	m_mouseX += m_mouseState.lX;
-	m_mouseY += m_mouseState.lY;
+	m_mousePosition.x += m_mouseState.lX;
+	m_mousePosition.y += m_mouseState.lY;
 
 	// Ensure the mouse does not go off screen.
-	if (m_mouseX < 0) { m_mouseX = 0; }
-	if (m_mouseY < 0) { m_mouseY = 0; }
-	if (m_mouseX > m_screenWidth) { m_mouseX = m_screenWidth; }
-	if (m_mouseY > m_screenHeight) { m_mouseY = m_screenHeight; }
+	if (m_mousePosition.x < 0) { m_mousePosition.x = 0; }
+	if (m_mousePosition.y < 0) { m_mousePosition.y = 0; }
+	if (m_mousePosition.x > m_screenWidth) { m_mousePosition.x = m_screenWidth; }
+	if (m_mousePosition.y > m_screenHeight) { m_mousePosition.y = m_screenHeight; }
 
 	return;
 }
@@ -188,9 +187,8 @@ bool InputClass::IsEscapePressed()
 	return false;
 }
 
-void InputClass::GetMouseLocation(int& mouseX, int& mouseY)
+void InputClass::GetMouseLocation(POINT& mousePosition)
 {
-	mouseX = m_mouseX;
-	mouseY = m_mouseY;
+	mousePosition = m_mousePosition;
 	return;
 }

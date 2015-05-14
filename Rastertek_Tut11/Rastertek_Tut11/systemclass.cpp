@@ -130,8 +130,7 @@ void SystemClass::Shutdown()
 bool SystemClass::Frame()
 {
 	bool result;
-	int mouseX;
-	int mouseY;
+	POINT position;
 
 	// Do the input per-frame processing.
 	result = m_Input->Frame();
@@ -139,10 +138,10 @@ bool SystemClass::Frame()
 		return false;
 
 	// Get the location of the mouse from the input object.
-	m_Input->GetMouseLocation(mouseX, mouseY);
+	m_Input->GetMouseLocation(position);
 
 	// Do the frame processing for graphics objects.
-	result = m_Graphics->Frame(mouseX, mouseY);
+	result = m_Graphics->Frame((int)position.x, (int)position.y);
 	if(!result)
 		return false;
 
@@ -164,6 +163,8 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	WNDCLASSEX WndClass;
 	DEVMODE dmScreenSettings;
 	DWORD dwStyle;
+	int positionX;
+	int positionY;
 	POINT point;
 
 	// Get the application handle.
@@ -214,8 +215,8 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 		dwStyle = WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP;
 
 		// Set the postion of the window to the top left corner.
-		point.x = 0;
-		point.y = 0;
+		positionX = 0;
+		positionY = 0;
 	}
 	else
 	{
@@ -227,13 +228,13 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 		dwStyle = WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_OVERLAPPED | WS_SYSMENU | WS_MINIMIZEBOX;
 
 		// Place the window in the middle of the screen.
-		point.x = (GetSystemMetrics(SM_CXSCREEN) - screenWidth) / 2;
-		point.y = (GetSystemMetrics(SM_CYSCREEN) - screenHeight) / 2;
+		positionX = (GetSystemMetrics(SM_CXSCREEN) - screenWidth) / 2;
+		positionY = (GetSystemMetrics(SM_CYSCREEN) - screenHeight) / 2;
 	}
 
 	// Create the window.
 	m_hWnd = CreateWindowEx(WS_EX_APPWINDOW, m_AppName, m_AppName, dwStyle,
-							(int)point.x, (int)point.y, screenWidth, screenHeight, 
+							positionX, positionY, screenWidth, screenHeight, 
 							NULL, NULL, m_hInstance, NULL);
 
 	// Show the window and set it as the main focus.
@@ -241,9 +242,15 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	SetForegroundWindow(m_hWnd);
 	SetFocus(m_hWnd);
 
-	// Initialize the cursor position within the window.
-	//ScreenToClient(m_hWnd, &point);
-	//SetCursorPos((int)point.x, (int)point.y);
+	// Set the initial cursor position in the window.
+	ClientToScreen(m_hWnd, &point);
+	SetCursorPos((int)point.x, (int)point.y);
+
+	// Set the intitial cursor position.
+	point = { 0, 0 };
+	if (FULL_SCREEN)
+		ClientToScreen(m_hWnd, &point);
+	SetCursorPos((int)point.x, (int)point.y);
 
 	return;
 }

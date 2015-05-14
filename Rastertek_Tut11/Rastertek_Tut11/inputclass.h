@@ -34,7 +34,7 @@ public:
 	bool Frame();
 
 	bool IsEscapePressed();
-	void GetMouseLocation(int& mouseX, int& mouseY);
+	void GetMouseLocation(POINT& mousePosition);
 
 private:
 	bool ReadKeyboard();
@@ -49,7 +49,6 @@ private:
 	DIMOUSESTATE m_mouseState;
 	int m_screenWidth;
 	int m_screenHeight;
-	int m_mouseX;
-	int m_mouseY;
+	POINT m_mousePosition;
 };
 
