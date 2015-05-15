@@ -30,7 +30,7 @@ bool InputClass::Initialize(HINSTANCE hInstance, HWND hwnd, int screenWidth, int
 	m_screenHeight = screenHeight;
 
 	// Initialize the mouse location in the app window.
-	m_mousePosition = { 0, 0 };
+	GetCursorPos(&m_mousePosition);
 
 	// Initialize the direct input interface.
 	result = DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_directInput, NULL);
@@ -168,12 +168,6 @@ void InputClass::ProcessInput()
 	// Update the mouse location.
 	m_mousePosition.x += m_mouseState.lX;
 	m_mousePosition.y += m_mouseState.lY;
-
-	// Ensure the mouse does not go off screen.
-	if (m_mousePosition.x < 0) { m_mousePosition.x = 0; }
-	if (m_mousePosition.y < 0) { m_mousePosition.y = 0; }
-	if (m_mousePosition.x > m_screenWidth) { m_mousePosition.x = m_screenWidth; }
-	if (m_mousePosition.y > m_screenHeight) { m_mousePosition.y = m_screenHeight; }
 
 	return;
 }

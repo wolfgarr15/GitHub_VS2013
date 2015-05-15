@@ -242,14 +242,9 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	SetForegroundWindow(m_hWnd);
 	SetFocus(m_hWnd);
 
-	// Set the initial cursor position in the window.
-	ClientToScreen(m_hWnd, &point);
-	SetCursorPos((int)point.x, (int)point.y);
-
 	// Set the intitial cursor position.
 	point = { 0, 0 };
-	if (FULL_SCREEN)
-		ClientToScreen(m_hWnd, &point);
+	ClientToScreen(m_hWnd, &point);
 	SetCursorPos((int)point.x, (int)point.y);
 
 	return;
