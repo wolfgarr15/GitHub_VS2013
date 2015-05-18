@@ -14,6 +14,9 @@ SystemClass::SystemClass()
 {
 	m_Input = 0;
 	m_Graphics = 0;
+	m_FPS = 0;
+	m_CPU = 0;
+	m_Timer = 0;
 }
 
 SystemClass::SystemClass(const SystemClass& src) {}
@@ -61,6 +64,44 @@ bool SystemClass::Initialize()
 		return false;
 	}
 
+	// Create the FPS counter object.
+	m_FPS = new FPSClass;
+	if (!m_FPS)
+	{
+		MessageBox(m_hWnd, "Failed to create the FPS counter object.", "Error!", MB_OK);
+		return false;
+	}
+
+	// Initialize the FPS counter object.
+	m_FPS->Initialize();
+
+	// Create the CPU query object.
+	m_CPU = new CPUClass;
+	if (!m_CPU)
+	{
+		MessageBox(m_hWnd, "Failed to create the CPU query object.", "Error!", MB_OK);
+		return false;
+	}
+
+	// Initialize the CPU query object.
+	m_CPU->Initialize(m_hWnd);
+
+	// Create the timer object.
+	m_Timer = new TimerClass;
+	if (!m_Timer)
+	{
+		MessageBox(m_hWnd, "Failed to create the timer object.", "Error!", MB_OK);
+		return false;
+	}
+
+	// Initialize the timer object.
+	result = m_Timer->Initialize();
+	if (!result)
+	{
+		MessageBox(m_hWnd, "Failed to initialize the timer object.", "Error!", MB_OK);
+		return false;
+	}
+
 	return true;
 }
 
@@ -99,6 +140,28 @@ void SystemClass::Run()
 
 void SystemClass::Shutdown()
 {
+	// Release the timer object.
+	if (m_Timer)
+	{
+		delete m_Timer;
+		m_Timer = 0;
+	}
+
+	// Release the CPU query object.
+	if (m_CPU)
+	{
+		m_CPU->Shutdown();
+		delete m_CPU;
+		m_CPU = 0;
+	}
+
+	// Release the FPS object.
+	if (m_FPS)
+	{
+		delete m_FPS;
+		m_FPS = 0;
+	}
+
 	// Release the graphics object.
 	if(m_Graphics)
 	{
@@ -124,13 +187,23 @@ bool SystemClass::Frame()
 {
 	bool result;
 
+	// Update the system stats.
+	m_Timer->Frame();
+	m_FPS->Frame();
+	m_CPU->Frame();
+
 	// Check if the user has pressed the escape key.
 	if(m_Input->IsKeyDown(VK_ESCAPE))
 		return false;
 
 	// Do the frame processing for graphics objects.
-	result = m_Graphics->Frame();
+	result = m_Graphics->Frame(m_FPS->GetFPS(), m_CPU->GetCpuPercentage(), m_Timer->GetTime());
 	if(!result)
+		return false;
+
+	// Render the graphics scene.
+	result = m_Graphics->Render();
+	if (!result)
 		return false;
 
 	return true;

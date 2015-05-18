@@ -27,7 +27,7 @@ public:
 	CPUClass(const CPUClass& src);
 	~CPUClass();
 
-	void Initialize();
+	void Initialize(HWND hwnd);
 	void Shutdown();
 	void Frame();
 	int GetCpuPercentage();

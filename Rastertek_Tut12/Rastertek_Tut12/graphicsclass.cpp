@@ -43,7 +43,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Create the camera object.
-	m_Camera = new CameraClass(0.0f, 0.0f, -6.0f);
+	m_Camera = new CameraClass(0.0f, 0.0f, -10.0f);
 	if (!m_Camera)
 		return false;
 
@@ -56,7 +56,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	if (!m_Text)
 		return false;
 
-	result = m_Text->Initialize(m_D3D->GetDevice(), m_D3D->GetDeviceContext(), hwnd, screenWidth, screenHeight, baseViewMatrix);
+	result = m_Text->Initialize(m_D3D->GetDevice(), m_D3D->GetDeviceContext(), hwnd, screenWidth, screenHeight, baseViewMatrix, 2);
 	if (!result)
 	{
 		MessageBox(hwnd, "Could not initialize the text object.", "Error", MB_OK);
@@ -101,13 +101,18 @@ void GraphicsClass::Shutdown()
 	return;
 }
 
-bool GraphicsClass::Frame()
+bool GraphicsClass::Frame(int FPS, int CPU, float frameTime)
 {
 	bool result;
 
-	// Render the graphics scene.
-	result = Render();
-	if(!result)
+	// Set the frames per second.
+	result = m_Text->SetFPS(FPS, m_D3D->GetDeviceContext());
+	if (!result)
+		return false;
+
+	// Set the CPU usage.
+	result = m_Text->SetCPU(CPU, m_D3D->GetDeviceContext());
+	if (!result)
 		return false;
 
 	return true;

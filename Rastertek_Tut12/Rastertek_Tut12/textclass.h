@@ -43,10 +43,14 @@ public:
 	~TextClass();
 
 	bool Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, HWND hwnd,
-					int screenWidth, int screenHeight, D3DXMATRIX baseViewMatrix);
+					int screenWidth, int screenHeight, D3DXMATRIX baseViewMatrix,
+					int numSentences);
 
 	void Shutdown();
 	bool Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX orthomatrix);
+
+	bool SetFPS(int FPScount, ID3D11DeviceContext* deviceContext);
+	bool SetCPU(int CPUusage, ID3D11DeviceContext* deviceContext);
 
 private:
 	bool InitializeSentence(SentenceType** sentence, int maxLength, ID3D11Device* device);

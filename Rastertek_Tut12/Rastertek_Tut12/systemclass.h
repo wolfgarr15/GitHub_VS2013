@@ -14,6 +14,9 @@
 #include <Windows.h>
 #include "inputclass.h"
 #include "graphicsclass.h"
+#include "fpsclass.h"
+#include "cpuclass.h"
+#include "timerclass.h"
 
 ///////////////////////////////
 // Class Declaration
@@ -43,6 +46,9 @@ private:
 
 	InputClass* m_Input;
 	GraphicsClass* m_Graphics;
+	FPSClass* m_FPS;
+	CPUClass* m_CPU;
+	TimerClass* m_Timer;
 };
 
 ///////////////////////////////

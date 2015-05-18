@@ -22,7 +22,8 @@ TextClass::TextClass(const TextClass& src) {}
 TextClass::~TextClass() {}
 
 bool TextClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, HWND hwnd,
-							int screenWidth, int screenHeight, D3DXMATRIX baseViewMatrix)
+							int screenWidth, int screenHeight, D3DXMATRIX baseViewMatrix, 
+							int numSentences)
 {
 	bool result;
 
@@ -58,7 +59,7 @@ bool TextClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCont
 	}
 
 	// Create the sentence objects.
-	m_numSentences = 5;
+	m_numSentences = numSentences;
 
 	m_sentences = new SentenceType*[m_numSentences];
 	if (!m_sentences)
@@ -78,13 +79,6 @@ bool TextClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCont
 		if (!result)
 		{
 			MessageBox(hwnd, "Could not initialize a sentence object.", "Error", MB_OK);
-			return false;
-		}
-
-		result = UpdateSentence(m_sentences[i], "Hello", 100, (100 * (i + 1)), 1.0f, 0.0f, 0.0f, deviceContext);
-		if (!result)
-		{
-			MessageBox(hwnd, "Could not initialize sentence text.", "Error", MB_OK);
 			return false;
 		}
 	}
@@ -338,6 +332,80 @@ bool TextClass::RenderSentence(ID3D11DeviceContext* deviceContext, SentenceType*
 	// Render the text using the font shader.
 	result = m_fontShader->Render(deviceContext, sentence->indexCount, worldMatrix, m_baseViewMatrix, orthoMatrix, 
 									m_font->GetTexture(), pixelColor);
+	if (!result)
+		return false;
+
+	return true;
+}
+
+bool TextClass::SetFPS(int FPScount, ID3D11DeviceContext* deviceContext)
+{
+	char tmpString[16];
+	char FPSstring[16];
+	float red;
+	float green;
+	float blue;
+	bool result;
+
+	// Truncate the FPS to below 10,000.
+	if (FPScount > 9999)
+		FPScount = 9999;
+
+	// Convert the FPS integer to string format.
+	_itoa_s(FPScount, tmpString, 10);
+
+	// Setup the FPS counter string.
+	strcpy_s(FPSstring, "FPS : ");
+	strcat_s(FPSstring, tmpString);
+
+	// If the FPS is 60 or above, color the text green.
+	if (FPScount >= 60)
+	{
+		red = 0.0f;
+		green = 1.0f;
+		blue = 0.0f;
+	}
+
+	// If the FPS is less than 60, color the text yellow.
+	if (FPScount < 60)
+	{
+		red = 1.0f;
+		green = 1.0f;
+		blue = 0.0f;
+	}
+
+	// If the FPS is less than 30, color the text red.
+	if (FPScount < 30)
+	{
+		red = 1.0f;
+		green = 0.0f;
+		blue = 0.0f;
+	}
+
+	// Update the sentence vertex buffer with the new string info.
+	result = UpdateSentence(m_sentences[0], FPSstring, 20, 20, red, green, blue, deviceContext);
+	if (!result)
+		return false;
+
+	return true;
+}
+
+bool TextClass::SetCPU(int CPUusage, ID3D11DeviceContext* deviceContext)
+{
+	char tmpString[16];
+	char CPUstring[16];
+	bool result;
+
+	// Convert the CPU integer to string format.
+	_itoa_s(CPUusage, tmpString, 10);
+
+	// Setup the FPS counter string.
+	strcpy_s(CPUstring, "CPU : ");
+	strcat_s(CPUstring, tmpString);
+	strcat_s(CPUstring, "%");
+
+	// Update the sentence vertex buffer with the new string info.
+	result = UpdateSentence(m_sentences[1], CPUstring, 20, 40, 0.0f, 1.0f, 0.0f, deviceContext);
 	if (!result)
 		return false;
 
