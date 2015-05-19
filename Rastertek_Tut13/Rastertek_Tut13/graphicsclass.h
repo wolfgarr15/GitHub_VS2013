@@ -40,7 +40,7 @@ public:
 
 	bool Initialize(int screenWidth, int screenHeight, HWND hwnd);
 	void Shutdown();
-	bool Frame(int FPS, float rotationY);
+	bool Frame(int FPS, int CPUusage, float rotationY);
 	bool Render();
 
 private:

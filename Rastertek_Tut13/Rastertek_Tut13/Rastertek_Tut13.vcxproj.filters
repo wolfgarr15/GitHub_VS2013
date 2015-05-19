@@ -75,6 +75,9 @@
     <ClInclude Include="modellist.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="positionclass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Cube.txt">
@@ -168,6 +171,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="modellist.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="positionclass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -14,6 +14,7 @@ SystemClass::SystemClass()
 {
 	m_Input = 0;
 	m_Graphics = 0;
+	m_Position = 0;
 	m_FPS = 0;
 	m_CPU = 0;
 	m_Timer = 0;
@@ -102,6 +103,16 @@ bool SystemClass::Initialize()
 		return false;
 	}
 
+	// Create the position object.
+	m_Position = new PositionClass;
+	if (!m_Position)
+	{
+		MessageBox(m_hWnd, "Failed to create the position object.", "Error!", MB_OK);
+		return false;
+	}
+
+	return true;
+
 	return true;
 }
 
@@ -140,6 +151,13 @@ void SystemClass::Run()
 
 void SystemClass::Shutdown()
 {
+	// Release the position object.
+	if (m_Position)
+	{
+		delete m_Position;
+		m_Position = 0;
+	}
+
 	// Release the timer object.
 	if (m_Timer)
 	{
@@ -186,18 +204,32 @@ void SystemClass::Shutdown()
 bool SystemClass::Frame()
 {
 	bool result;
+	bool keyDown;
+	float rotationY;
+
+	// Check if the user has pressed the escape key.
+	if(m_Input->IsKeyDown(VK_ESCAPE))
+		return false;
 
 	// Update the system stats.
 	m_Timer->Frame();
 	m_FPS->Frame();
 	m_CPU->Frame();
 
-	// Check if the user has pressed the escape key.
-	if(m_Input->IsKeyDown(VK_ESCAPE))
-		return false;
+	// Set the frame time for calculating the updated position.
+	m_Position->SetFrameTime(m_Timer->GetTime());
+
+	// Check if the left or right arrow key is pressed and update the position.
+	keyDown = m_Input->IsKeyDown(VK_LEFT);
+	m_Position->TurnLeft(keyDown);
+	keyDown = m_Input->IsKeyDown(VK_RIGHT);
+	m_Position->TurnRight(keyDown);
+
+	// Get the current view rotation.
+	m_Position->GetRotation(rotationY);
 
 	// Do the frame processing for graphics objects.
-	result = m_Graphics->Frame(m_FPS->GetFPS(), m_CPU->GetCpuPercentage(), m_Timer->GetTime());
+	result = m_Graphics->Frame(m_FPS->GetFPS(), m_CPU->GetCpuPercentage(), rotationY);
 	if(!result)
 		return false;
 

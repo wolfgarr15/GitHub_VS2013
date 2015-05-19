@@ -411,3 +411,24 @@ bool TextClass::SetCPU(int CPUusage, ID3D11DeviceContext* deviceContext)
 
 	return true;
 }
+
+bool TextClass::SetRenderCount(int renderCount, ID3D11DeviceContext* deviceContext)
+{
+	char tmpString[32];
+	char renderCountString[32];
+	bool result;
+
+	// Convert the render count integer to string format.
+	_itoa_s(renderCount, tmpString, 10);
+
+	// Setup the counter string.
+	strcpy_s(renderCountString, "Render Count : ");
+	strcat_s(renderCountString, tmpString);
+
+	// Update the sentence vertex buffer with the new string info.
+	result = UpdateSentence(m_sentences[2], renderCountString, 20, 60, 0.0f, 0.0f, 1.0f, deviceContext);
+	if (!result)
+		return false;
+
+	return true;
+}

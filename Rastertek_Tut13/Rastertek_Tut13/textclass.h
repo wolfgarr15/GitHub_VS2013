@@ -51,6 +51,7 @@ public:
 
 	bool SetFPS(int FPScount, ID3D11DeviceContext* deviceContext);
 	bool SetCPU(int CPUusage, ID3D11DeviceContext* deviceContext);
+	bool SetRenderCount(int renderCount, ID3D11DeviceContext* deviceContext);
 
 private:
 	bool InitializeSentence(SentenceType** sentence, int maxLength, ID3D11Device* device);

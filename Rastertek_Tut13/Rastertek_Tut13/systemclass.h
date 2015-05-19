@@ -14,6 +14,7 @@
 #include <Windows.h>
 #include "inputclass.h"
 #include "graphicsclass.h"
+#include "positionclass.h"
 #include "fpsclass.h"
 #include "cpuclass.h"
 #include "timerclass.h"
@@ -46,6 +47,7 @@ private:
 
 	InputClass* m_Input;
 	GraphicsClass* m_Graphics;
+	PositionClass* m_Position;
 	FPSClass* m_FPS;
 	CPUClass* m_CPU;
 	TimerClass* m_Timer;

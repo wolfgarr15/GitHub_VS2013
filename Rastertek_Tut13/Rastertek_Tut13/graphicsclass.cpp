@@ -61,7 +61,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	if (!m_Text)
 		return false;
 
-	result = m_Text->Initialize(m_D3D->GetDevice(), m_D3D->GetDeviceContext(), hwnd, screenWidth, screenHeight, baseViewMatrix, 2);
+	result = m_Text->Initialize(m_D3D->GetDevice(), m_D3D->GetDeviceContext(), hwnd, screenWidth, screenHeight, baseViewMatrix, 3);
 	if (!result)
 	{
 		MessageBox(hwnd, "Could not initialize the text object.", "Error", MB_OK);
@@ -74,7 +74,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 
 	// Initialize the model.
-	result = m_Model->Initialize(m_D3D->GetDevice(), L"Sphere.txt");
+	result = m_Model->Initialize(m_D3D->GetDevice(), "Sphere.txt", L"SomeTexture.dds");
 	if (!result)
 	{
 		MessageBox(hwnd, "Could not initialize the model object.", "Error", MB_OK);
@@ -202,12 +202,16 @@ void GraphicsClass::Shutdown()
 	return;
 }
 
-bool GraphicsClass::Frame(int FPS, float rotationY)
+bool GraphicsClass::Frame(int FPS, int CPUusage, float rotationY)
 {
 	bool result;
 
 	// Set the frames per second.
 	result = m_Text->SetFPS(FPS, m_D3D->GetDeviceContext());
+	if (!result)
+		return false;
+
+	result = m_Text->SetCPU(CPUusage, m_D3D->GetDeviceContext());
 	if (!result)
 		return false;
 
@@ -258,7 +262,7 @@ bool GraphicsClass::Render()
 	renderCount = 0;
 
 	// Go through all the models and render them only if they can be seen by the camera view.
-	for (int index = 0; index<modelCount; index++)
+	for (int index = 0; index < modelCount; index++)
 	{
 		// Get the position and color of the sphere model at this index.
 		m_ModelList->GetData(index, positionX, positionY, positionZ, color);
@@ -280,7 +284,7 @@ bool GraphicsClass::Render()
 
 			// Render the model using the light shader.
 			m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
-				m_Model->GetTexture(), m_Light->GetDirection(), color);
+				m_Model->GetTexture(), m_Light->GetDirection(), D3DXVECTOR4(0.1f, 0.1f, 0.1f, 1.0f), color);
 
 			// Reset to the original world matrix.
 			m_D3D->GetWorldMatrix(worldMatrix);
@@ -290,7 +294,6 @@ bool GraphicsClass::Render()
 		}
 	}
 
-	// Set the number of models that was actually rendered this frame.
 	result = m_Text->SetRenderCount(renderCount, m_D3D->GetDeviceContext());
 	if (!result)
 		return false;
