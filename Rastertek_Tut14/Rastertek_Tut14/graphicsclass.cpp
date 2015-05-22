@@ -15,7 +15,7 @@ GraphicsClass::GraphicsClass()
 	m_D3D = 0;
 	m_Camera = 0;
 	m_Model = 0;
-	m_TextureShader = 0;
+	m_MultitextureShader = 0;
 }
 
 GraphicsClass::GraphicsClass(const GraphicsClass& src) {}
@@ -43,7 +43,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Create the camera object.
-	m_Camera = new CameraClass(0.0f, 0.0f, -6.0f);
+	m_Camera = new CameraClass(0.0f, 0.0f, -5.0f);
 	if (!m_Camera)
 		return false;
 
@@ -53,7 +53,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 
 	// Initialize the model object.
-	result = m_Model->Initialize(m_D3D->GetDevice(), "square.txt", L"stone01.dds");
+	result = m_Model->Initialize(m_D3D->GetDevice(), "square.txt", L"stone01.dds", L"dirt01.dds");
 	if (!result)
 	{
 		MessageBox(hwnd, "Could not initialize the model object.", "Error", MB_OK);
@@ -61,15 +61,15 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Create the color shader object.
-	m_TextureShader = new TextureShaderClass;
-	if (!m_TextureShader)
+	m_MultitextureShader = new MultitextureShaderClass;
+	if (!m_MultitextureShader)
 		return false;
 
 	// Initialize the color shader object.
-	result = m_TextureShader->Initialize(m_D3D->GetDevice(), hwnd);
+	result = m_MultitextureShader->Initialize(m_D3D->GetDevice(), hwnd);
 	if (!result)
 	{
-		MessageBox(hwnd, "Could not initialize the texture shader object.", "Error", MB_OK);
+		MessageBox(hwnd, "Could not initialize the multitexture shader object.", "Error", MB_OK);
 		return false;
 	}
 
@@ -86,11 +86,11 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 void GraphicsClass::Shutdown()
 {
 	// Release the color shader object.
-	if (m_TextureShader)
+	if (m_MultitextureShader)
 	{
-		m_TextureShader->Shutdown();
-		delete m_TextureShader;
-		m_TextureShader = 0;
+		m_MultitextureShader->Shutdown();
+		delete m_MultitextureShader;
+		m_MultitextureShader = 0;
 	}
 
 	// Release the model object.
@@ -153,9 +153,9 @@ bool GraphicsClass::Render()
 	m_Model->Render(m_D3D->GetDeviceContext());
 
 	// Render the scene using the shader.
-	result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), 
+	result = m_MultitextureShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), 
 									worldMatrix, viewMatrix, projectionMatrix,
-									m_Model->GetTexture());
+									m_Model->GetTextureArray());
 	if (!result)
 		return false;
 

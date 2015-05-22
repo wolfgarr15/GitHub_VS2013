@@ -14,7 +14,7 @@ ModelClass::ModelClass()
 {
 	m_vertexBuffer = 0;
 	m_indexBuffer = 0;
-	m_texture = 0;
+	m_textureArray = 0;
 	m_model = 0;
 }
 
@@ -22,7 +22,7 @@ ModelClass::ModelClass(const ModelClass& src) {}
 
 ModelClass::~ModelClass() {}
 
-bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* texFilename)
+bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* texFilename1, WCHAR* texFilename2)
 {
 	bool result;
 
@@ -37,7 +37,7 @@ bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* te
 		return false;
 
 	// Load the texture for the model.
-	result = LoadTexture(device, texFilename);
+	result = LoadTextures(device, texFilename1, texFilename2);
 	if (!result)
 		return false;
 
@@ -47,7 +47,7 @@ bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* te
 void ModelClass::Shutdown()
 {
 	// Release the texture resource.
-	ReleaseTexture();
+	ReleaseTextures();
 
 	// Release the vertex and index buffers.
 	ShutdownBuffers();
@@ -70,9 +70,9 @@ int ModelClass::GetIndexCount()
 	return m_indexCount;
 }
 
-ID3D11ShaderResourceView* ModelClass::GetTexture()
+ID3D11ShaderResourceView** ModelClass::GetTextureArray()
 {
-	return m_texture->GetTexture();
+	return m_textureArray->GetTextureArray();
 }
 
 bool ModelClass::InitializeBuffers(ID3D11Device* device)
@@ -188,30 +188,30 @@ void ModelClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 	return;
 }
 
-bool ModelClass::LoadTexture(ID3D11Device* device, WCHAR* texFilename)
+bool ModelClass::LoadTextures(ID3D11Device* device, WCHAR* texFilename1, WCHAR* texFilename2)
 {
 	bool result;
 
-	// Create the texture object.
-	m_texture = new TextureClass;
-	if (!m_texture)
+	// Create the texture array object.
+	m_textureArray = new TextureArrayClass;
+	if (!m_textureArray)
 		return false;
 
-	// Initialize the texture object.
-	result = m_texture->Initialize(device, texFilename);
+	// Initialize the texture array object.
+	result = m_textureArray->Initialize(device, texFilename1, texFilename2);
 	if (!result)
 		return false;
 
 	return true;
 }
 
-void ModelClass::ReleaseTexture()
+void ModelClass::ReleaseTextures()
 {
-	if (m_texture)
+	if (m_textureArray)
 	{
-		m_texture->Shutdown();
-		delete m_texture;
-		m_texture = 0;
+		m_textureArray->Shutdown();
+		delete m_textureArray;
+		m_textureArray = 0;
 	}
 
 	return;

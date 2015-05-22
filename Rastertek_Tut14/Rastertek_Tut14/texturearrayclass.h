@@ -1,5 +1,5 @@
 /////////////////////////////////
-// Filename: textureclass.h
+// Filename: texturearrayclass.h
 /////////////////////////////////
 
 /////////////////////////////////
@@ -16,19 +16,19 @@
 ///////////////////////////////
 // Class Declaration
 //-----------------------------
-class TextureClass
+class TextureArrayClass
 {
 public:
-	TextureClass();
-	TextureClass(const TextureClass& src);
-	~TextureClass();
+	TextureArrayClass();
+	TextureArrayClass(const TextureArrayClass& src);
+	~TextureArrayClass();
 
-	bool Initialize(ID3D11Device* device, WCHAR* texFilename);
+	bool Initialize(ID3D11Device* device, WCHAR* texFilename1, WCHAR* texFilename2);
 	void Shutdown();
 
-	ID3D11ShaderResourceView* GetTexture();
+	ID3D11ShaderResourceView** GetTextureArray();
 
 private:
-	ID3D11ShaderResourceView* m_texture;
+	ID3D11ShaderResourceView* m_textures[2];
 };
 

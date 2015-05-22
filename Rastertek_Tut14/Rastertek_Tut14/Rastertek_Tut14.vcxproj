@@ -67,8 +67,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="psTexture.hlsli" />
-    <None Include="vsTexture.hlsli" />
+    <None Include="psMultitexture.hlsli" />
+    <None Include="vsMultitexture.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cameraclass.h" />
@@ -77,8 +77,8 @@
     <ClInclude Include="inputclass.h" />
     <ClInclude Include="modelclass.h" />
     <ClInclude Include="systemclass.h" />
-    <ClInclude Include="textureclass.h" />
-    <ClInclude Include="textureshaderclass.h" />
+    <ClInclude Include="texturearrayclass.h" />
+    <ClInclude Include="multitextureshaderclass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cameraclass.cpp" />
@@ -87,8 +87,8 @@
     <ClCompile Include="inputclass.cpp" />
     <ClCompile Include="modelclass.cpp" />
     <ClCompile Include="systemclass.cpp" />
-    <ClCompile Include="textureclass.cpp" />
-    <ClCompile Include="textureshaderclass.cpp" />
+    <ClCompile Include="texturearrayclass.cpp" />
+    <ClCompile Include="multitextureshaderclass.cpp" />
     <ClCompile Include="winmain.cpp" />
   </ItemGroup>
   <ItemGroup>

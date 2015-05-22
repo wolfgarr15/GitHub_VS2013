@@ -13,7 +13,7 @@
 #include <D3D11.h>
 #include <D3DX10math.h>
 #include <fstream>
-#include "textureclass.h"
+#include "texturearrayclass.h"
 
 using namespace std;
 
@@ -50,21 +50,21 @@ public:
 	ModelClass(const ModelClass& src);
 	~ModelClass();
 
-	bool Initialize(ID3D11Device* device, char* modelFilename, WCHAR* texFilename);
+	bool Initialize(ID3D11Device* device, char* modelFilename, WCHAR* texFilename1, WCHAR* texFilename2);
 	void Shutdown();
 	void Render(ID3D11DeviceContext* deviceContext);
 
 	int GetIndexCount();
 
-	ID3D11ShaderResourceView* GetTexture();
+	ID3D11ShaderResourceView** GetTextureArray();
 
 private:
 	bool InitializeBuffers(ID3D11Device* device);
 	void ShutdownBuffers();
 	void RenderBuffers(ID3D11DeviceContext* deviceContext);
 
-	bool LoadTexture(ID3D11Device* device, WCHAR* texFilename);
-	void ReleaseTexture();
+	bool LoadTextures(ID3D11Device* device, WCHAR* texFilename1, WCHAR* texFilename2);
+	void ReleaseTextures();
 
 	bool LoadModel(char* modelFilename);
 	void ReleaseModel();
@@ -74,7 +74,7 @@ private:
 	ID3D11Buffer* m_indexBuffer;
 	int m_vertexCount;
 	int m_indexCount;
-	TextureClass* m_texture;
+	TextureArrayClass* m_textureArray;
 	ModelType* m_model;
 };
 

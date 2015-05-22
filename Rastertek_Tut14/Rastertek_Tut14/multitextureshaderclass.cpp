@@ -1,16 +1,16 @@
 ////////////////////////////////
-// Filename: textureshaderclass.cpp
+// Filename: multitextureshaderclass.cpp
 ////////////////////////////////
 
 ////////////////////////////////
 // Class Header
 //------------------------------
-#include "textureshaderclass.h"
+#include "multitextureshaderclass.h"
 
 ///////////////////////////////
 // Class Definition
 //-----------------------------
-TextureShaderClass::TextureShaderClass()
+MultitextureShaderClass::MultitextureShaderClass()
 {
 	m_vertexShader = 0;
 	m_pixelShader = 0;
@@ -19,37 +19,37 @@ TextureShaderClass::TextureShaderClass()
 	m_samplerState = 0;
 }
 
-TextureShaderClass::TextureShaderClass(const TextureShaderClass& src) {}
+MultitextureShaderClass::MultitextureShaderClass(const MultitextureShaderClass& src) {}
 
-TextureShaderClass::~TextureShaderClass() {}
+MultitextureShaderClass::~MultitextureShaderClass() {}
 
-bool TextureShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
+bool MultitextureShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
 {
 	bool result;
 
 	// Initialize the shaders.
-	result = InitializeShader(device, hwnd, L"vsTexture.hlsli", L"psTexture.hlsli");
+	result = InitializeShader(device, hwnd, L"vsMultitexture.hlsli", L"psMultitexture.hlsli");
 	if (!result)
 		return false;
 
 	return true;
 }
 
-void TextureShaderClass::Shutdown()
+void MultitextureShaderClass::Shutdown()
 {
 	// Shutdown the vertex and pixel shaders.
 	ShutdownShader();
 	return;
 }
 
-bool TextureShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount,
+bool MultitextureShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount,
 								D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix,
-								ID3D11ShaderResourceView* texture)
+								ID3D11ShaderResourceView** textureArray)
 {
 	bool result;
 
 	// Set the shader parameters.
-	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, texture);
+	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, textureArray);
 	if (!result)
 		return false;
 
@@ -59,7 +59,7 @@ bool TextureShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCou
 	return true;
 }
 
-bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilename, WCHAR* psFilename)
+bool MultitextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilename, WCHAR* psFilename)
 {
 	HRESULT result;
 	ID3D10Blob* errorMessage;
@@ -76,7 +76,7 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR
 	pixelShaderBuffer = 0;
 
 	// Compile th vertex shader code.
-	result = D3DX11CompileFromFileW(vsFilename, NULL, NULL, "TextureVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
+	result = D3DX11CompileFromFileW(vsFilename, NULL, NULL, "MultitextureVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
 									&vertexShaderBuffer, &errorMessage, NULL);
 	if (FAILED(result))
 	{
@@ -92,7 +92,7 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR
 	}
 
 	// Compile the pixel shader code.
-	result = D3DX11CompileFromFileW(psFilename, NULL, NULL, "TexturePixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
+	result = D3DX11CompileFromFileW(psFilename, NULL, NULL, "MultitexturePixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
 									&pixelShaderBuffer, &errorMessage, NULL);
 	if (FAILED(result))
 	{
@@ -182,7 +182,7 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR
 	return true;
 }
 
-void TextureShaderClass::ShutdownShader()
+void MultitextureShaderClass::ShutdownShader()
 {
 	// Release the sampler state.
 	if (m_samplerState)
@@ -222,7 +222,7 @@ void TextureShaderClass::ShutdownShader()
 	return;
 }
 
-void TextureShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* shaderFilename)
+void MultitextureShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* shaderFilename)
 {
 	char* compileErrors;
 	ULONG buffersize;
@@ -254,9 +254,9 @@ void TextureShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND
 	return;
 }
 
-bool TextureShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
+bool MultitextureShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 											D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix,
-											ID3D11ShaderResourceView* texture)
+											ID3D11ShaderResourceView** textureArray)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -291,12 +291,12 @@ bool TextureShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
 
 	// Set the shader texture resource in the pixel shader.
-	deviceContext->PSSetShaderResources(0, 1, &texture);
+	deviceContext->PSSetShaderResources(0, 2, textureArray);
 
 	return true;
 }
 
-void TextureShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)
+void MultitextureShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)
 {
 	// Set the vertex input layout.
 	deviceContext->IASetInputLayout(m_layout);

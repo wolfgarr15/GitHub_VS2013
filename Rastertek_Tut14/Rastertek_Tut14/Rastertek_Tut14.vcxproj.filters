@@ -18,10 +18,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="psTexture.hlsli">
+    <None Include="vsMultitexture.hlsli">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="vsTexture.hlsli">
+    <None Include="psMultitexture.hlsli">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
@@ -44,10 +44,10 @@
     <ClInclude Include="systemclass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="textureclass.h">
+    <ClInclude Include="multitextureshaderclass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="textureshaderclass.h">
+    <ClInclude Include="texturearrayclass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -70,13 +70,13 @@
     <ClCompile Include="systemclass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="textureclass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="textureshaderclass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="winmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="multitextureshaderclass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="texturearrayclass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

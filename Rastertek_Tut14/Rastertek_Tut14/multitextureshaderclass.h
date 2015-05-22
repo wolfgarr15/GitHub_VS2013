@@ -1,5 +1,5 @@
 ///////////////////////////////////
-// Filename: textureshaderclass.h
+// Filename: multitextureshaderClass.h
 ///////////////////////////////////
 
 ///////////////////////////////////
@@ -19,7 +19,7 @@ using namespace std;
 ///////////////////////////////
 // Class Declaration
 //-----------------------------
-class TextureShaderClass
+class MultitextureShaderClass
 {
 private:
 	struct MatrixBufferType
@@ -30,15 +30,15 @@ private:
 	};
 
 public:
-	TextureShaderClass();
-	TextureShaderClass(const TextureShaderClass& src);
-	~TextureShaderClass();
+	MultitextureShaderClass();
+	MultitextureShaderClass(const MultitextureShaderClass& src);
+	~MultitextureShaderClass();
 
 	bool Initialize(ID3D11Device* device, HWND hwnd);
 	void Shutdown();
 	bool Render(ID3D11DeviceContext* deviceContext, int indexCount,
 				D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix,
-				ID3D11ShaderResourceView* texture);
+				ID3D11ShaderResourceView** textureArray);
 
 private:
 	bool InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilename, WCHAR* psFilename);
@@ -47,7 +47,8 @@ private:
 
 	bool SetShaderParameters(ID3D11DeviceContext* deviceContext,
 							D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix,
-							ID3D11ShaderResourceView* texture);
+							ID3D11ShaderResourceView** textureArray);
+
 	void RenderShader(ID3D11DeviceContext* deviceContext, int indexCount);
 
 private:
