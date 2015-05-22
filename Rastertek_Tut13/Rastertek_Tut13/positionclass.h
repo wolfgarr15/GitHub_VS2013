@@ -23,14 +23,19 @@ public:
 	~PositionClass();
 
 	void SetFrameTime(float time);
-	void GetRotation(float& rotationY);
+	void GetRotation(float& rotationX, float& rotationY);
 
+	void TurnUp(bool keyDown);
+	void TurnDown(bool keyDown);
 	void TurnLeft(bool keyDown);
 	void TurnRight(bool keyDown);
 
 private:
 	float m_frameTime;
+	float m_rotationX;
 	float m_rotationY;
+	float m_upTurnSpeed;
+	float m_downTurnSpeed;
 	float m_leftTurnSpeed;
 	float m_rightTurnSpeed;
 };

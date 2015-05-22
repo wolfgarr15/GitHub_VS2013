@@ -50,6 +50,11 @@ bool ModelList::Initialize(int modelCount)
 		m_ModelInfoList[i].positionX = (((float)rand() - (float)rand()) / RAND_MAX) * 10.0f;
 		m_ModelInfoList[i].positionY = (((float)rand() - (float)rand()) / RAND_MAX) * 10.0f;
 		m_ModelInfoList[i].positionZ = ((((float)rand() - (float)rand()) / RAND_MAX) * 10.0f) + 5.0f;
+
+		// Generate a random rotation.
+		m_ModelInfoList[i].rotationX = (((float)rand() - (float)rand()) / RAND_MAX) * 2.0f * (float)D3DX_PI;
+		m_ModelInfoList[i].rotationY = (((float)rand() - (float)rand()) / RAND_MAX) * 2.0f * (float)D3DX_PI;
+		m_ModelInfoList[i].rotationZ = (((float)rand() - (float)rand()) / RAND_MAX) * 2.0f * (float)D3DX_PI;
 	}
 
 	return true;
@@ -72,13 +77,19 @@ int ModelList::GetModelCount()
 	return m_modelCount;
 }
 
-void ModelList::GetData(int index, float& positionX, float& positionY, float& positionZ, D3DXVECTOR4& color)
+void ModelList::GetData(int index, D3DXVECTOR4& color, 
+						float& positionX, float& positionY, float& positionZ,
+						float& rotationX, float& rotationY, float& rotationZ)
 {
+	color = m_ModelInfoList[index].color;
+
 	positionX = m_ModelInfoList[index].positionX;
 	positionY = m_ModelInfoList[index].positionY;
 	positionZ = m_ModelInfoList[index].positionZ;
 
-	color = m_ModelInfoList[index].color;
+	rotationX = m_ModelInfoList[index].rotationX;
+	rotationY = m_ModelInfoList[index].rotationY;
+	rotationZ = m_ModelInfoList[index].rotationZ;
 
 	return;
 }

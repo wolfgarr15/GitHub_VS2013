@@ -202,7 +202,7 @@ void GraphicsClass::Shutdown()
 	return;
 }
 
-bool GraphicsClass::Frame(int FPS, int CPUusage, float rotationY)
+bool GraphicsClass::Frame(int FPS, int CPUusage, float rotationX, float rotationY)
 {
 	bool result;
 
@@ -219,7 +219,7 @@ bool GraphicsClass::Frame(int FPS, int CPUusage, float rotationY)
 	m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
 
 	// Set the rotation of the camera.
-	m_Camera->SetRotation(0.0f, rotationY, 0.0f);
+	m_Camera->SetRotation(rotationX, rotationY, 0.0f);
 
 	return true;
 }
@@ -230,11 +230,16 @@ bool GraphicsClass::Render()
 	D3DXMATRIX viewMatrix;
 	D3DXMATRIX projectionMatrix;
 	D3DXMATRIX orthoMatrix;
+	D3DXMATRIX translationMatrix;
+	D3DXMATRIX rotationMatrix;
 	int modelCount;
 	int renderCount;
 	float positionX;
 	float positionY;
 	float positionZ;
+	float rotationX;
+	float rotationY;
+	float rotationZ;
 	float radius;
 	D3DXVECTOR4 color;
 	bool renderModel;
@@ -265,7 +270,7 @@ bool GraphicsClass::Render()
 	for (int index = 0; index < modelCount; index++)
 	{
 		// Get the position and color of the sphere model at this index.
-		m_ModelList->GetData(index, positionX, positionY, positionZ, color);
+		m_ModelList->GetData(index, color, positionX, positionY, positionZ, rotationX, rotationY, rotationZ);
 
 		// Set the radius of the sphere to 1.0 since this is already known.
 		radius = 1.0f;
@@ -276,8 +281,13 @@ bool GraphicsClass::Render()
 		// If it can be seen then render it, if not skip this model and check the next sphere.
 		if (renderModel)
 		{
+			// Rotate the model.
+			D3DXMatrixRotationYawPitchRoll(&rotationMatrix, rotationX, rotationY, rotationZ);
+
 			// Move the model to the location it should be rendered at.
-			D3DXMatrixTranslation(&worldMatrix, positionX, positionY, positionZ);
+			D3DXMatrixTranslation(&translationMatrix, positionX, positionY, positionZ);
+
+			worldMatrix = worldMatrix  * rotationMatrix * translationMatrix;
 
 			// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
 			m_Model->Render(m_D3D->GetDeviceContext());

@@ -26,6 +26,9 @@ private:
 		float positionX;
 		float positionY;
 		float positionZ;
+		float rotationX;
+		float rotationY;
+		float rotationZ;
 	};
 
 public:
@@ -37,7 +40,9 @@ public:
 	void Shutdown();
 
 	int GetModelCount();
-	void GetData(int index, float& positionX, float& positionY, float& positionZ, D3DXVECTOR4& color);
+	void GetData(int index, D3DXVECTOR4& color, 
+				float& positionX, float& positionY, float& positionZ, 
+				float& rotationX, float& rotationY, float& rotationZ);
 
 private:
 	int m_modelCount;

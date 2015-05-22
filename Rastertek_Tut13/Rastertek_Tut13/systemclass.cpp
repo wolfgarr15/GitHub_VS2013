@@ -205,6 +205,7 @@ bool SystemClass::Frame()
 {
 	bool result;
 	bool keyDown;
+	float rotationX;
 	float rotationY;
 
 	// Check if the user has pressed the escape key.
@@ -219,17 +220,24 @@ bool SystemClass::Frame()
 	// Set the frame time for calculating the updated position.
 	m_Position->SetFrameTime(m_Timer->GetTime());
 
-	// Check if the left or right arrow key is pressed and update the position.
+	// Check if an arrow key is pressed and update the position.
+	keyDown = m_Input->IsKeyDown(VK_UP);
+	m_Position->TurnUp(keyDown);
+
+	keyDown = m_Input->IsKeyDown(VK_DOWN);
+	m_Position->TurnDown(keyDown);
+
 	keyDown = m_Input->IsKeyDown(VK_LEFT);
 	m_Position->TurnLeft(keyDown);
+
 	keyDown = m_Input->IsKeyDown(VK_RIGHT);
 	m_Position->TurnRight(keyDown);
 
 	// Get the current view rotation.
-	m_Position->GetRotation(rotationY);
+	m_Position->GetRotation(rotationX, rotationY);
 
 	// Do the frame processing for graphics objects.
-	result = m_Graphics->Frame(m_FPS->GetFPS(), m_CPU->GetCpuPercentage(), rotationY);
+	result = m_Graphics->Frame(m_FPS->GetFPS(), m_CPU->GetCpuPercentage(), rotationX, rotationY);
 	if(!result)
 		return false;
 
