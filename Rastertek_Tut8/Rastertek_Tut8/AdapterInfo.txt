@@ -1,0 +1,2 @@
+Video Graphics Adapter Name: NVIDIA Quadro K610M 
+Video Graphics Adapter Memory = 953 MB
