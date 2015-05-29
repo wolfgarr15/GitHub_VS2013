@@ -60,8 +60,8 @@ PixelInputType BumpMapVertexShader(VertexInputType input)
 	output.tangent = normalize(output.tangent);
 
 	// Calculate the normalized binormal vector.
-	output.binormal = mul(input.binormal, (float3x3)worldmatrix);
-	output.binormal = normalize(input.binormal, (float3x3)worldMatrix);
+	output.binormal = mul(input.binormal, (float3x3)worldMatrix);
+	output.binormal = normalize(input.binormal);
 
 	return output;
 }

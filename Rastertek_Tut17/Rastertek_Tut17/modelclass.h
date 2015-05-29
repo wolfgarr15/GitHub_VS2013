@@ -95,13 +95,15 @@ private:
 	void RenderBuffers(ID3D11DeviceContext* deviceContext);
 
 	bool LoadTextures(ID3D11Device* device, WCHAR* texFilename, WCHAR* bumpMapFilename);
-	void ReleaseTexture();
+	void ReleaseTextures();
 
 	bool LoadModel(char* modelFilename);
 	void ReleaseModel();
 
 	void CalculateModelVectors();
-	void CalculateTangentBinormal(TempVertexType);
+	void CalculateTangentBinormal(TempVertexType vertex1, TempVertexType vertex2, TempVertexType vertex3,
+								  VectorType& tangent, VectorType& binormal);
+	void CalculateNormal(VectorType tangent, VectorType binormal, VectorType& normal);
 
 private:
 	ID3D11Buffer* m_vertexBuffer;

@@ -12,6 +12,7 @@ cbuffer LightBuffer
 {
 	float4 diffuseColor;
 	float3 lightDirection;
+	float padding;
 };
 
 /////////////////////////////////
@@ -57,7 +58,7 @@ float4 BumpMapPixelShader(PixelInputType input) : SV_TARGET
 	// Calculate the light intensity on this pixel based on the bump map normal.
 	lightIntensity = saturate(dot(bumpNormal, lightDir));
 
-	// Determine the final color.
+	// Determine the final color based on the bump map weighted diffuse color and texture color.
 	color = saturate(diffuseColor * lightIntensity) * textureColor;
 
 	return color;

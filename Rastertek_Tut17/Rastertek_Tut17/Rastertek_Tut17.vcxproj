@@ -86,9 +86,6 @@
     <Text Include="Sphere.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="SomeTexture.dds" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="cameraclass.cpp" />
     <ClCompile Include="d3dclass.cpp" />
     <ClCompile Include="graphicsclass.cpp" />
@@ -99,6 +96,10 @@
     <ClCompile Include="systemclass.cpp" />
     <ClCompile Include="texturearrayclass.cpp" />
     <ClCompile Include="winmain.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="bump01.dds" />
+    <Image Include="stone01.dds" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -16,7 +16,7 @@ GraphicsClass::GraphicsClass()
 	m_Camera = 0;
 	m_Model = 0;
 	m_Light = 0;
-	m_LightShader = 0;
+	m_BumpMapShader = 0;
 }
 
 GraphicsClass::GraphicsClass(const GraphicsClass& src) {}
@@ -44,7 +44,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Create the camera object.
-	m_Camera = new CameraClass(0.0f, 0.0f, -6.0f);
+	m_Camera = new CameraClass(0.0f, 0.0f, -7.0f);
 	if (!m_Camera)
 		return false;
 
@@ -54,7 +54,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 
 	// Initialize the model object.
-	result = m_Model->Initialize(m_D3D->GetDevice(), L"SomeTexture.dds");
+	result = m_Model->Initialize(m_D3D->GetDevice(), "Cube.txt", L"stone01.dds", L"bump01.dds");
 	if (!result)
 	{
 		MessageBox(hwnd, "Could not initialize the model object.", "Error", MB_OK);
@@ -67,19 +67,19 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 
 	// Initialize the light object.
-	m_Light->SetDiffuseColor(1.0f, 0.0f, 1.0f, 1.0f);
+	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light->SetDirection(0.0f, 0.0f, 1.0f);
 
-	// Create the color shader object.
-	m_LightShader = new LightShaderClass;
-	if (!m_LightShader)
+	// Create the bump map shader object.
+	m_BumpMapShader = new BumpMapShaderClass;
+	if (!m_BumpMapShader)
 		return false;
 
-	// Initialize the color shader object.
-	result = m_LightShader->Initialize(m_D3D->GetDevice(), hwnd);
+	// Initialize the bump map shader object.
+	result = m_BumpMapShader->Initialize(m_D3D->GetDevice(), hwnd);
 	if (!result)
 	{
-		MessageBox(hwnd, "Could not initialize the light shader object.", "Error", MB_OK);
+		MessageBox(hwnd, "Could not initialize the bump map shader object.", "Error", MB_OK);
 		return false;
 	}
 
@@ -96,11 +96,11 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 void GraphicsClass::Shutdown()
 {
 	// Release the color shader object.
-	if (m_LightShader)
+	if (m_BumpMapShader)
 	{
-		m_LightShader->Shutdown();
-		delete m_LightShader;
-		m_LightShader = 0;
+		m_BumpMapShader->Shutdown();
+		delete m_BumpMapShader;
+		m_BumpMapShader = 0;
 	}
 
 	// Release the light object.
@@ -143,7 +143,7 @@ bool GraphicsClass::Frame()
 	static float rotation = 0.0f;
 
 	// Update the rotation variable each frame.
-	rotation += (float)D3DX_PI * 0.01f;
+	rotation += (float)D3DX_PI * 0.0025f;
 	if (rotation > 360.0f)
 	{
 		rotation -= 360.0f;
@@ -182,9 +182,9 @@ bool GraphicsClass::Render(float rotation)
 	m_Model->Render(m_D3D->GetDeviceContext());
 
 	// Render the scene using the shader.
-	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), 
+	result = m_BumpMapShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), 
 									worldMatrix, viewMatrix, projectionMatrix,
-									m_Model->GetTexture(),
+									m_Model->GetTextureArray(),
 									m_Light->GetDirection(), m_Light->GetDiffuseColor());
 	if (!result)
 		return false;

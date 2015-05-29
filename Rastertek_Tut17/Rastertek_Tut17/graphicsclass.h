@@ -15,7 +15,7 @@
 #include "cameraclass.h"
 #include "modelclass.h"
 #include "lightclass.h"
-#include "lightshaderclass.h"
+#include "bumpmapshaderclass.h"
 
 ///////////////////////////////
 // Globals
@@ -47,6 +47,6 @@ private:
 	CameraClass* m_Camera;
 	ModelClass* m_Model;
 	LightClass* m_Light;
-	LightShaderClass* m_LightShader;
+	BumpMapShaderClass* m_BumpMapShader;
 };
 

@@ -14,14 +14,13 @@ TextureArrayClass::TextureArrayClass()
 {
 	m_textures[0] = 0;
 	m_textures[1] = 0;
-	m_textures[2] = 0;
 }
 
 TextureArrayClass::TextureArrayClass(const TextureArrayClass& src) {}
 
 TextureArrayClass::~TextureArrayClass() {}
 
-bool TextureArrayClass::Initialize(ID3D11Device* device, WCHAR* texFilename1, WCHAR* texFilename2, WCHAR* alphaFilename)
+bool TextureArrayClass::Initialize(ID3D11Device* device, WCHAR* texFilename1, WCHAR* texFilename2)
 {
 	HRESULT result;
 
@@ -31,10 +30,6 @@ bool TextureArrayClass::Initialize(ID3D11Device* device, WCHAR* texFilename1, WC
 		return false;
 
 	result = D3DX11CreateShaderResourceViewFromFileW(device, texFilename2, NULL, NULL, &m_textures[1], NULL);
-	if (FAILED(result))
-		return false;
-
-	result = D3DX11CreateShaderResourceViewFromFileW(device, alphaFilename, NULL, NULL, &m_textures[2], NULL);
 	if (FAILED(result))
 		return false;
 
@@ -54,12 +49,6 @@ void TextureArrayClass::Shutdown()
 	{
 		m_textures[1]->Release();
 		m_textures[1] = 0;
-	}
-
-	if (m_textures[2])
-	{
-		m_textures[2]->Release();
-		m_textures[2] = 0;
 	}
 
 	return;
