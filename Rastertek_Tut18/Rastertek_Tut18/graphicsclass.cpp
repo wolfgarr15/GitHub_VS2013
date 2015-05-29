@@ -16,7 +16,7 @@ GraphicsClass::GraphicsClass()
 	m_Camera = 0;
 	m_Model = 0;
 	m_Light = 0;
-	m_BumpMapShader = 0;
+	m_SpecMapShader = 0;
 }
 
 GraphicsClass::GraphicsClass(const GraphicsClass& src) {}
@@ -54,7 +54,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 
 	// Initialize the model object.
-	result = m_Model->Initialize(m_D3D->GetDevice(), "Sphere.txt", L"stone01.dds", L"bump01.dds");
+	result = m_Model->Initialize(m_D3D->GetDevice(), "Cube.txt", L"stone02.dds", L"bump02.dds", L"spec02.dds");
 	if (!result)
 	{
 		MessageBox(hwnd, "Could not initialize the model object.", "Error", MB_OK);
@@ -69,17 +69,19 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	// Initialize the light object.
 	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light->SetDirection(0.0f, 0.0f, 1.0f);
+	m_Light->SetSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
+	m_Light->SetSpecularPower(16.0f);
 
 	// Create the bump map shader object.
-	m_BumpMapShader = new BumpMapShaderClass;
-	if (!m_BumpMapShader)
+	m_SpecMapShader = new SpecMapShaderClass;
+	if (!m_SpecMapShader)
 		return false;
 
 	// Initialize the bump map shader object.
-	result = m_BumpMapShader->Initialize(m_D3D->GetDevice(), hwnd);
+	result = m_SpecMapShader->Initialize(m_D3D->GetDevice(), hwnd);
 	if (!result)
 	{
-		MessageBox(hwnd, "Could not initialize the bump map shader object.", "Error", MB_OK);
+		MessageBox(hwnd, "Could not initialize the specular map shader object.", "Error", MB_OK);
 		return false;
 	}
 
@@ -96,11 +98,11 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 void GraphicsClass::Shutdown()
 {
 	// Release the color shader object.
-	if (m_BumpMapShader)
+	if (m_SpecMapShader)
 	{
-		m_BumpMapShader->Shutdown();
-		delete m_BumpMapShader;
-		m_BumpMapShader = 0;
+		m_SpecMapShader->Shutdown();
+		delete m_SpecMapShader;
+		m_SpecMapShader = 0;
 	}
 
 	// Release the light object.
@@ -162,6 +164,7 @@ bool GraphicsClass::Render(float rotation)
 	D3DXMATRIX worldMatrix;
 	D3DXMATRIX viewMatrix;
 	D3DXMATRIX projectionMatrix;
+	D3DXMATRIX rotY, rotX, rotZ;
 	bool result;
 
 	// Clear the buffers to begin the scene.
@@ -176,16 +179,20 @@ bool GraphicsClass::Render(float rotation)
 	m_D3D->GetProjectionMatrix(projectionMatrix);
 
 	// Rotate the world matrix to spin the model.
-	D3DXMatrixRotationY(&worldMatrix, rotation);
+	D3DXMatrixRotationX(&rotX, rotation);
+	D3DXMatrixRotationY(&rotY, rotation);
+	D3DXMatrixRotationZ(&rotZ, rotation);
+	worldMatrix = rotX * rotY * rotZ * worldMatrix;
 
 	// Put the model on the render pipeline.
 	m_Model->Render(m_D3D->GetDeviceContext());
 
 	// Render the scene using the shader.
-	result = m_BumpMapShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), 
+	result = m_SpecMapShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), 
 									worldMatrix, viewMatrix, projectionMatrix,
 									m_Model->GetTextureArray(),
-									m_Light->GetDirection(), m_Light->GetDiffuseColor());
+									m_Light->GetDirection(), m_Light->GetDiffuseColor(),
+									m_Camera->GetPosition(), m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
 	if (!result)
 		return false;
 
