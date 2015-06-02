@@ -138,10 +138,11 @@ bool GraphicsClass::Render()
 	D3DXMATRIX worldMatrix;
 	D3DXMATRIX viewMatrix;
 	D3DXMATRIX projectionMatrix;
+	D3DXMATRIX Rx, Ry, Rz;
 	bool result;
 
 	// Set the clip plane.
-	clipPlane = D3DXVECTOR4(0.0f, -1.0f, 0.0f, 0.0f);
+	clipPlane = D3DXVECTOR4(-1.0f, -1.0f, 0.0f, 0.0f);
 
 	// Clear the buffers to begin the scene. NOTE: We clear the scene to the fog color.
 	m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
@@ -162,7 +163,10 @@ bool GraphicsClass::Render()
 	}
 
 	// Multiply the world matrix by the rotation.
-	D3DXMatrixRotationY(&worldMatrix, rotation);
+	D3DXMatrixRotationX(&Rx, rotation);
+	D3DXMatrixRotationY(&Ry, rotation);
+	D3DXMatrixRotationZ(&Rz, rotation);
+	worldMatrix = worldMatrix * Rx * Ry * Rz;
 
 	// Put the model on the render pipeline.
 	m_Model->Render(m_D3D->GetDeviceContext());
