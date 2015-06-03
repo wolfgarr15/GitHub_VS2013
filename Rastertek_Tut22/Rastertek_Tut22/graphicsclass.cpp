@@ -158,7 +158,7 @@ bool GraphicsClass::Render()
 		rotation -= 360.0f;
 
 	// Update the texture translation variable each frame.
-	textureTranslation += 0.01f;
+	textureTranslation += 0.05f;
 	if (textureTranslation > 1.0f)
 		textureTranslation -= 1.0f;
 
