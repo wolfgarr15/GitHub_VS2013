@@ -175,12 +175,10 @@ bool GraphicsClass::Frame()
 
 bool GraphicsClass::Render()
 {
-	static float rotation = 0.0f;
 	float blendAmount = 0.5f;
 	D3DXMATRIX worldMatrix;
 	D3DXMATRIX viewMatrix;
 	D3DXMATRIX projectionMatrix;
-	D3DXMATRIX Rx, Ry, Rz;
 	bool result;
 
 	// Clear the buffers to begin the scene.
@@ -193,12 +191,6 @@ bool GraphicsClass::Render()
 	m_D3D->GetWorldMatrix(worldMatrix);
 	m_Camera->GetViewMatrix(viewMatrix);
 	m_D3D->GetProjectionMatrix(projectionMatrix);
-
-	// Apply the rotation transformation.
-	D3DXMatrixRotationX(&Rx, rotation);
-	D3DXMatrixRotationY(&Ry, rotation);
-	D3DXMatrixRotationZ(&Rz, rotation);
-	//worldMatrix = worldMatrix * Rx * Ry * Rz; // DISABLE ROTATIONS FOR NOW!!!
 
 	// Put the model on the render pipeline.
 	m_Model1->Render(m_D3D->GetDeviceContext());
@@ -233,11 +225,6 @@ bool GraphicsClass::Render()
 
 	// Present the rendered scene.
 	m_D3D->EndScene();
-
-	// Update the rotation.
-	rotation += 0.005f;
-	if (rotation > 360.0f)
-		rotation -= 360.0f;
 
 	return true;
 }
