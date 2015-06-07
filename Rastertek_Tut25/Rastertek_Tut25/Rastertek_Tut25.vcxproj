@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{CB162B85-5A50-4C91-A00A-983C628B8B80}</ProjectGuid>
-    <RootNamespace>Rastertek_Tut18</RootNamespace>
+    <ProjectGuid>{D5D22A2E-DE3B-466E-88CD-05EDA2628870}</ProjectGuid>
+    <RootNamespace>Rastertek_Tut25</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -71,40 +71,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="specmapshaderclass.h" />
-    <ClInclude Include="cameraclass.h" />
-    <ClInclude Include="d3dclass.h" />
-    <ClInclude Include="graphicsclass.h" />
-    <ClInclude Include="inputclass.h" />
-    <ClInclude Include="lightclass.h" />
-    <ClInclude Include="modelclass.h" />
-    <ClInclude Include="systemclass.h" />
-    <ClInclude Include="texturearrayclass.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="psSpecMap.hlsli" />
-    <None Include="vsSpecMap.hlsli" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Cube.txt" />
-    <Text Include="Sphere.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="bump02.dds" />
-    <Image Include="spec02.dds" />
-    <Image Include="stone02.dds" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="specmapshaderclass.cpp" />
-    <ClCompile Include="cameraclass.cpp" />
-    <ClCompile Include="d3dclass.cpp" />
-    <ClCompile Include="graphicsclass.cpp" />
-    <ClCompile Include="inputclass.cpp" />
-    <ClCompile Include="lightclass.cpp" />
-    <ClCompile Include="modelclass.cpp" />
-    <ClCompile Include="systemclass.cpp" />
-    <ClCompile Include="texturearrayclass.cpp" />
-    <ClCompile Include="winmain.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

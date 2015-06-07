@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{CB162B85-5A50-4C91-A00A-983C628B8B80}</ProjectGuid>
-    <RootNamespace>Rastertek_Tut18</RootNamespace>
+    <ProjectGuid>{B5C6E81A-2720-41CA-831C-0A65D37F213C}</ProjectGuid>
+    <RootNamespace>Rastertek_Tut22</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -42,10 +42,6 @@
     <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -71,39 +67,35 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="specmapshaderclass.h" />
     <ClInclude Include="cameraclass.h" />
+    <ClInclude Include="translateshaderclass.h" />
     <ClInclude Include="d3dclass.h" />
     <ClInclude Include="graphicsclass.h" />
     <ClInclude Include="inputclass.h" />
-    <ClInclude Include="lightclass.h" />
     <ClInclude Include="modelclass.h" />
     <ClInclude Include="systemclass.h" />
-    <ClInclude Include="texturearrayclass.h" />
+    <ClInclude Include="textureclass.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="psSpecMap.hlsli" />
-    <None Include="vsSpecMap.hlsli" />
+    <None Include="psTranslate.hlsli" />
+    <None Include="vsTranslate.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Cube.txt" />
     <Text Include="Sphere.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="bump02.dds" />
-    <Image Include="spec02.dds" />
-    <Image Include="stone02.dds" />
+    <Image Include="SomeTexture.dds" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="specmapshaderclass.cpp" />
     <ClCompile Include="cameraclass.cpp" />
+    <ClCompile Include="translateshaderclass.cpp" />
     <ClCompile Include="d3dclass.cpp" />
     <ClCompile Include="graphicsclass.cpp" />
     <ClCompile Include="inputclass.cpp" />
-    <ClCompile Include="lightclass.cpp" />
     <ClCompile Include="modelclass.cpp" />
     <ClCompile Include="systemclass.cpp" />
-    <ClCompile Include="texturearrayclass.cpp" />
+    <ClCompile Include="textureclass.cpp" />
     <ClCompile Include="winmain.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
